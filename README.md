@@ -140,7 +140,10 @@ Object.keys(localStorage).filter(k => k.startsWith('tg11:')).forEach(k => localS
 | `--deep-ocean` | `#0c2c3f` | Hero gradient, drop boxes |
 | `--deep-pine` | `#0e3630` | Dark sections, list numbers |
 | `--sea` / `--sea-bright` | `#17605c` / `#2c8a80` | Links, active tab, accents |
-| `--sand` | `#e0b874` | Primary button, stamps, the 11th notch |
+| `--sand` | `#e0b874` | Primary button, focus rings, the 11th notch |
+| `--lagoon-*` | `#cdf5ea` → `#4cc6c6` | Clear-water gradient on the page-link cards |
+| `--reef-*` | `#c7f0f7` → `#52c4de` | The bluer, deeper variant of the same |
+| `--ink-water` | `#08304a` | Headings on the water cards (6.4:1 at the deepest stop) |
 | `--on-light` | `#0b2545` | Body and heading type on light surfaces (14.1:1) |
 | `--on-light-muted` | `#3c5a7d` | Secondary type on light surfaces (6.5:1) |
 | `--on-dark` | `#ffffff` | Type on the dark sections |
@@ -150,6 +153,13 @@ the matching muted tone. Type is Fraunces (display) over Inter (body).
 
 The dial motif — 11 notches with the last one in sand — is built by `mountDials()`
 from `<span class="dial" data-dial="11"></span>`.
+
+Cards that link to another page share the `.water-card` class: a clear-water
+gradient built from four layers — the body of the water, a depth shadow in the
+far corner, refracted light lines, and the sun catching the near surface. Add
+`.water-card--reef` for the bluer pool. Because these cards are light, they set
+their own ink colours rather than inheriting the white type of the dark section
+they sit in.
 
 ## Files
 

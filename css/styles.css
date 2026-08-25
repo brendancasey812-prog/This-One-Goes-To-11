@@ -22,6 +22,18 @@
   --sand-soft: #f0dcb8;
   --foam: #7fd6c9;
 
+  /* Clear water — sunlit shallows through to the drop-off. Used for the
+     cards that link between pages. Stops stay light enough that the ink
+     below clears AA everywhere on the gradient. */
+  --lagoon-light: #cdf5ea;
+  --lagoon-mid: #8adcd2;
+  --lagoon-deep: #4cc6c6;
+  --reef-light: #c7f0f7;
+  --reef-mid: #86d9ea;
+  --reef-deep: #52c4de;
+  --ink-water: #08304a;        /* headings on water — 6.4:1 at the deepest stop */
+  --ink-water-muted: #0f4a5e;  /* body on water — 4.6:1 at the deepest stop */
+
   /* Text — white on dark surfaces, deep blue on light ones */
   --on-dark: #ffffff;
   --on-dark-muted: rgba(255, 255, 255, 0.72);
@@ -178,8 +190,9 @@ a { color: var(--sea); }
 }
 
 .site-nav__links a.is-active {
-  background: var(--sea-bright);
-  color: var(--on-dark);
+  background: linear-gradient(150deg, var(--lagoon-mid), var(--lagoon-deep));
+  color: var(--ink-water);
+  font-weight: 600;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -501,43 +514,92 @@ a { color: var(--sea); }
   gap: 24px;
 }
 
-.tab-card {
+/* Shared water surface for every card that links to another page.
+   Four layers, back to front: the body of the water, a depth shadow in the
+   far corner, refracted light lines, and the sun hitting the near surface. */
+.water-card {
   position: relative;
   display: block;
-  padding: 36px 32px 32px;
   border-radius: var(--radius-lg);
   text-decoration: none;
-  color: var(--on-dark);
   overflow: hidden;
-  min-height: 230px;
-  border: 1px solid var(--border-dark);
-  background: linear-gradient(150deg, var(--sea), var(--deep-ocean));
+  color: var(--ink-water);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background:
+    radial-gradient(115% 78% at 14% 6%, rgba(255, 255, 255, 0.62), transparent 58%),
+    radial-gradient(95% 75% at 90% 96%, rgba(8, 48, 74, 0.14), transparent 62%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.11) 0 2px, transparent 2px 24px),
+    linear-gradient(155deg, var(--lagoon-light) 0%, var(--lagoon-mid) 44%, var(--lagoon-deep) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 14px 34px -20px rgba(8, 48, 74, 0.55);
   transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 
-.tab-card--alt { background: linear-gradient(150deg, var(--deep-pine), var(--deep-navy)); }
+/* The bluer, deeper pool. */
+.water-card--reef {
+  background:
+    radial-gradient(115% 78% at 14% 6%, rgba(255, 255, 255, 0.62), transparent 58%),
+    radial-gradient(95% 75% at 90% 96%, rgba(8, 48, 74, 0.14), transparent 62%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.11) 0 2px, transparent 2px 24px),
+    linear-gradient(155deg, var(--reef-light) 0%, var(--reef-mid) 44%, var(--reef-deep) 100%);
+}
 
-.tab-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lift); }
+.water-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 26px 52px -24px rgba(8, 48, 74, 0.6);
+}
+
+.water-card:focus-visible {
+  outline: 3px solid var(--sand);
+  outline-offset: 3px;
+}
+
+/* Ink on water beats the .on-dark rules of the section the cards sit in. */
+.water-card,
+.water-card h2,
+.water-card h3 { color: var(--ink-water); }
+
+.water-card p { color: var(--ink-water-muted); }
+
+/* --- The trip cards on the About page --- */
+
+.tab-card {
+  padding: 36px 32px 32px;
+  min-height: 230px;
+}
 
 .tab-card__num {
   font-family: var(--font-display);
   font-size: 3.4rem;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.16);
+  color: rgba(8, 48, 74, 0.16);
   position: absolute;
   top: 18px;
   right: 26px;
 }
 
-.tab-card h3 { font-size: 1.5rem; margin-bottom: 0.35em; }
-.tab-card p { color: var(--on-dark-muted); margin-bottom: 18px; max-width: 34ch; }
+.tab-card h3 { font-size: 1.5rem; margin-bottom: 0.35em; max-width: 20ch; }
+.tab-card p { margin-bottom: 18px; max-width: 34ch; }
 
 .tab-card__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--sand);
+  color: var(--ink-water);
   letter-spacing: 0.02em;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  transition: background 0.25s var(--ease), transform 0.25s var(--ease);
 }
+
+.tab-card:hover .tab-card__go { background: rgba(255, 255, 255, 0.85); transform: translateX(3px); }
 
 /* ---------------------------------------------------------------------- */
 /* Trips                                                                   */
@@ -1435,31 +1497,19 @@ body.is-editing .only-view { display: none; }
   gap: 20px;
 }
 
-.pager__link {
-  display: block;
-  padding: 28px 30px;
-  border-radius: var(--radius-lg);
-  text-decoration: none;
-  color: var(--on-dark);
-  border: 1px solid var(--border-dark);
-  background: linear-gradient(150deg, var(--sea), var(--deep-ocean));
-  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
-}
-
-.pager__link--alt { background: linear-gradient(150deg, var(--deep-pine), var(--deep-navy)); }
-.pager__link:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+.pager__link { padding: 28px 30px; }
 
 .pager__kicker {
   display: block;
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--sand);
+  color: var(--ink-water-muted);
   margin-bottom: 8px;
 }
 
-.pager__title { font-size: 1.35rem; margin-bottom: 0.3em; }
-.pager__link p { color: var(--on-dark-muted); font-size: 0.95rem; margin: 0; }
+.pager__link .pager__title { font-size: 1.35rem; margin-bottom: 0.3em; color: var(--ink-water); }
+.pager__link p { font-size: 0.95rem; margin: 0; }
 
 /* ======================================================================== */
 /* Jump links inside a long article                                         */
@@ -1475,15 +1525,22 @@ body.is-editing .only-view { display: none; }
 .jumpbar a {
   padding: 8px 18px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(127, 214, 201, 0.42);
+  background: rgba(76, 198, 198, 0.16);
   color: var(--on-dark);
   text-decoration: none;
   font-size: 0.86rem;
   font-weight: 500;
-  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
 }
 
-.jumpbar a:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--foam); }
+.jumpbar a:hover {
+  background: var(--lagoon-mid);
+  border-color: var(--lagoon-light);
+  color: var(--ink-water);
+}
+
+.jumpbar a:focus-visible { outline: 2px solid var(--sand); outline-offset: 2px; }
 
 /* Anchored headings shouldn't hide under the sticky nav. */
 [id] { scroll-margin-top: 90px; }
