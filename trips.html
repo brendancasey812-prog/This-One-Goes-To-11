@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trips — This Goes to 11</title>
+  <meta name="description" content="The long version: one destination at a time, with the photos and the parts worth keeping." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__dial" aria-hidden="true">11</span>
+        This Goes to 11
+      </a>
+      <ul class="site-nav__links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="trips.html" class="is-active">Trips</a></li>
+        <li><a href="recommendations.html">Recommendations</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-head on-dark">
+      <div class="container">
+        <span class="eyebrow">01 — Trips</span>
+        <h1 class="page-head__title">Everywhere the dial went up.</h1>
+        <p class="page-head__lede muted only-view">
+          One trip at a time — what happened, and why it earned the extra notch.
+        </p>
+        <p class="page-head__lede muted only-edit">
+          One trip per block. Drop your photos into the frames, rewrite the titles and notes —
+          everything saves in your browser as you type, then export it to publish.
+        </p>
+      </div>
+    </header>
+
+    <section class="section section--light on-light">
+      <div class="container">
+        <div class="toolbar">
+          <p class="muted" style="margin:0;">
+            <span id="tripCount">0</span> trips logged — newest at the bottom.
+          </p>
+          <button class="btn btn--outline btn--small" id="addTripBtn" type="button">+ Add a trip</button>
+        </div>
+        <div id="tripList"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <strong>This Goes to 11</strong> — travel notes, kept honest.
+      <div class="site-footer__links">
+        <a href="index.html">Home</a>
+        <a href="trips.html">Trips</a>
+        <a href="recommendations.html">Recommendations</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/storage.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/scroll-reveal.js"></script>
+  <script src="js/photos.js"></script>
+  <script src="js/trips.js"></script>
+</body>
+</html>

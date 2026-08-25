@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>This Goes to 11 — Travel, turned all the way up</title>
+  <meta name="description" content="A travel blog about the trips worth taking and the places worth telling people about." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__dial" aria-hidden="true">11</span>
+        This Goes to 11
+      </a>
+      <ul class="site-nav__links">
+        <li><a href="index.html" class="is-active">Home</a></li>
+        <li><a href="trips.html">Trips</a></li>
+        <li><a href="recommendations.html">Recommendations</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ============================ HERO ============================ -->
+    <header class="hero on-dark">
+      <div class="container hero__grid">
+        <div class="hero__body">
+          <span class="eyebrow">A travel blog</span>
+          <h1 class="hero__title">Most trips go to ten.<br /><em>This one goes to 11.</em></h1>
+          <p class="hero__lede muted">
+            Somewhere between the itinerary and the improvising is the good part.
+            This is where I keep the trips that earned the extra notch — and the
+            places I'd send you to without hesitating.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="trips.html">See the trips</a>
+            <a class="btn btn--ghost" href="recommendations.html">Get recommendations</a>
+          </div>
+        </div>
+
+        <div class="hero__media">
+          <div id="heroSlot"></div>
+          <div class="hero__stamp" aria-hidden="true">Turn<br />it<br />up</div>
+        </div>
+      </div>
+    </header>
+
+    <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#f2f6f5" d="M0,38 C240,74 420,6 720,26 C1020,46 1200,72 1440,40 L1440,70 L0,70 Z"></path>
+    </svg>
+
+    <!-- ============================ THE WHY ============================ -->
+    <section class="section section--light on-light">
+      <div class="container feature reveal">
+        <div class="feature__media" id="whySlot"></div>
+        <div class="feature__body">
+          <span class="eyebrow">The why</span>
+          <h2 class="section__title">Ten is fine. Eleven is the story you tell later.</h2>
+          <p>
+            Every trip has a version that works — the one the guidebook hands you, where the
+            timing is sensible and nothing goes sideways. That's a ten. It's fine.
+          </p>
+          <p>
+            Eleven is the wrong turn that ended at the better beach. The dinner you got talked into.
+            The train you took because it was slower. This blog exists because those moments never
+            fit in a text message home, and I got tired of losing them.
+          </p>
+          <p class="muted">
+            So: two tabs, no fuss. <strong>Trips</strong> is the long version, one place at a time.
+            <strong>Recommendations</strong> is the short version — the things I'd tell you over a
+            drink if you said you were going.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ ABOUT ME ============================ -->
+    <section class="section section--deep on-dark">
+      <div class="container feature feature--reverse reveal">
+        <div class="feature__media" id="aboutSlot"></div>
+        <div class="feature__body">
+          <span class="eyebrow">About me</span>
+          <h2 class="section__title">Hi — I'm the one holding the camera.</h2>
+          <p class="muted">
+            I plan about sixty percent of a trip and leave the rest to whoever I meet on day two.
+            I will always pick the coastal road, the market breakfast, and the place with a
+            handwritten menu. I am reliably wrong about how long a hike takes.
+          </p>
+          <p class="muted">
+            I started keeping notes because friends kept asking the same question — <em>where should
+            we go?</em> — and I kept giving worse answers than the trip deserved. This is the better answer.
+          </p>
+          <textarea
+            class="field-notes muted"
+            id="aboutExtra"
+            data-about-key="intro"
+            placeholder="Add your own line here — it saves as you type."
+            aria-label="Your own introduction"
+          ></textarea>
+
+          <div class="stat-row">
+            <div class="stat">
+              <div class="stat__num" id="statTrips">—</div>
+              <div class="stat__label">Trips logged</div>
+            </div>
+            <div class="stat">
+              <div class="stat__num" id="statRecs">—</div>
+              <div class="stat__label">Recommendations</div>
+            </div>
+            <div class="stat">
+              <div class="stat__num">11</div>
+              <div class="stat__label">Where the dial sits</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ POSTCARDS ============================ -->
+    <section class="section section--warm on-light">
+      <div class="container">
+        <div class="section__head section__head--center reveal">
+          <span class="eyebrow">From the road</span>
+          <h2 class="section__title">Pictures that made the cut</h2>
+          <p class="muted only-view">
+            A handful of frames from the road — the ones that still hold up months later.
+          </p>
+          <p class="muted only-edit">
+            Drop your own shots straight into any frame — JPG, PNG, WEBP, HEIC, GIF, even a PDF
+            itinerary. They stay in this browser until you export them.
+          </p>
+        </div>
+        <div class="postcards postcards--mixed reveal" id="postcardGrid"></div>
+      </div>
+    </section>
+
+    <!-- ============================ TABS ============================ -->
+    <section class="section section--ocean on-dark">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow">Where to next</span>
+          <h2 class="section__title">Two ways in</h2>
+        </div>
+        <div class="tab-cards reveal">
+          <a class="tab-card" href="trips.html">
+            <span class="tab-card__num" aria-hidden="true">01</span>
+            <h3>Trips</h3>
+            <p>The long version. One destination at a time, with the photos and the parts I'd rather not forget.</p>
+            <span class="tab-card__go">Open the trips →</span>
+          </a>
+          <a class="tab-card tab-card--alt" href="recommendations.html">
+            <span class="tab-card__num" aria-hidden="true">02</span>
+            <h3>Recommendations</h3>
+            <p>Where to sleep, what to eat, what to actually do — filtered down to the ones I'd vouch for.</p>
+            <span class="tab-card__go">Open the list →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <strong>This Goes to 11</strong> — travel notes, kept honest.
+      <div class="site-footer__links">
+        <a href="index.html">Home</a>
+        <a href="trips.html">Trips</a>
+        <a href="recommendations.html">Recommendations</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/storage.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/scroll-reveal.js"></script>
+  <script src="js/photos.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>
