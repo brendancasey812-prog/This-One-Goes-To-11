@@ -90,12 +90,20 @@ free way to put a login in front of a static site.
 Every photo placeholder is a drop target in edit mode. Drag a file onto it, or
 click to browse:
 
-- **Previews:** JPG, JPEG, PNG, WEBP, AVIF, GIF, BMP, SVG
-- **Accepted, no preview:** HEIC, HEIF, TIFF, PDF — the filename is kept on the card
-  (browsers can't decode HEIC, so it's stored as a reference)
+- **Photos, shown inline:** JPG, JPEG, JFIF, PNG, WEBP, AVIF, GIF, BMP, SVG
+- **PDFs (scans, itineraries, tickets):** stored whole and published as a card that
+  opens or downloads the file
+- **Accepted, name only:** HEIC, HEIF, TIFF — browsers can't decode these, so the
+  filename is kept and you'll see a note
+
+On a phone or tablet the same frame offers the camera, the document scanner, the
+photo library and the files app, because the input accepts both `image/*` and
+`application/pdf`.
 
 Images are resized to a 1600px longest edge before being saved so they fit in browser
-storage. If storage fills up, the photo still shows for the visit and a note appears.
+storage. PDFs aren't resizable, so anything over ~1.5 MB keeps its name only rather
+than blowing the storage budget — shrink it first if you want it published. If storage
+fills up, the file still shows for the visit and a note appears.
 
 Frames are declared in the HTML, so adding one is a single element:
 
@@ -133,7 +141,9 @@ Object.keys(localStorage).filter(k => k.startsWith('tg11:')).forEach(k => localS
 | `--deep-pine` | `#0e3630` | Dark sections, list numbers |
 | `--sea` / `--sea-bright` | `#17605c` / `#2c8a80` | Links, active tab, accents |
 | `--sand` | `#e0b874` | Primary button, stamps, the 11th notch |
-| `--on-dark` / `--on-light` | `#ffffff` / `#0a1a1f` | Text, picked per surface |
+| `--on-light` | `#0b2545` | Body and heading type on light surfaces (14.1:1) |
+| `--on-light-muted` | `#3c5a7d` | Secondary type on light surfaces (6.5:1) |
+| `--on-dark` | `#ffffff` | Type on the dark sections |
 
 Sections declare `.on-dark` or `.on-light`, which sets white or near-black text and
 the matching muted tone. Type is Fraunces (display) over Inter (body).

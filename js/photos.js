@@ -2,15 +2,22 @@
    Any element with .dropzone can be wired up with Photos.attach(el, slotId). */
 
 const ACCEPTED_EXTENSIONS = [
-  '.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.bmp', '.svg',
+  '.jpg', '.jpeg', '.jfif', '.png', '.gif', '.webp', '.avif', '.bmp', '.svg',
   '.heic', '.heif', '.tif', '.tiff', '.pdf',
 ];
 
-/* Accept attribute used by every file input on the site. */
+/* Accept attribute used by every file input on the site. Listing the MIME
+   types as well as the extensions is what makes phones offer "Take Photo",
+   "Scan Document" and the files app alongside the photo library. */
 const ACCEPT_ATTR = `image/*,application/pdf,${ACCEPTED_EXTENSIONS.join(',')}`;
 
 /* Longest edge (px) an image is resized to before being stored. */
 const MAX_STORED_EDGE = 1600;
+
+/* A PDF is kept whole — there's nothing to downscale — so it only gets stored
+   inline if it's small enough to survive base64 (~+33%) inside the ~5MB
+   localStorage budget. Anything larger is kept as a named reference. */
+const MAX_STORED_DOC_BYTES = 1_500_000;
 
 let toastEl = null;
 let toastTimer = null;
@@ -26,6 +33,18 @@ function showToast(message) {
   toastEl.classList.add('is-visible');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove('is-visible'), 4200);
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+/** True for a File or a stored photo record that is a PDF. */
+function isPdf(fileOrPhoto) {
+  const type = (fileOrPhoto.type || '').toLowerCase();
+  const name = (fileOrPhoto.name || '').toLowerCase();
+  return type === 'application/pdf' || name.endsWith('.pdf');
 }
 
 function isProbablyImage(file) {
@@ -82,13 +101,25 @@ const Photos = {
   markup({
     slotId,
     label,
-    hint = 'Drop a photo here — JPG, PNG, WEBP, HEIC, GIF or PDF',
+    hint = 'Photo, scan or PDF — drop it in, or click to upload',
     icon = '📷',
     classes = '',
     placeholder = true,
   }) {
     if (typeof EditMode !== 'undefined' && !EditMode.active) {
       const photo = Storage.getPhoto(slotId);
+      if (photo && photo.dataUrl && isPdf(photo)) {
+        // A PDF can't be an <img>, so it becomes a card that opens the file.
+        return `
+          <figure class="photo photo--doc ${classes}">
+            <a class="doccard" href="${photo.dataUrl}" target="_blank" rel="noopener" download="${escapeHTML(photo.name || 'document.pdf')}">
+              <span class="doccard__icon" aria-hidden="true">📄</span>
+              <span class="doccard__name">${escapeHTML(photo.name || label || 'Document')}</span>
+              <span class="doccard__note">PDF — open</span>
+            </a>
+          </figure>
+        `;
+      }
       if (photo && photo.dataUrl) {
         return `<figure class="photo ${classes}"><img src="${photo.dataUrl}" alt="${escapeHTML(photo.name || label || 'Trip photo')}" loading="lazy" /></figure>`;
       }
@@ -129,19 +160,21 @@ const Photos = {
 
     const render = (photo) => {
       if (!photo) {
-        dropzone.classList.remove('has-file', 'has-image');
+        dropzone.classList.remove('has-file', 'has-image', 'has-doc');
         if (preview) { preview.removeAttribute('src'); preview.alt = ''; }
         if (filenameEl) filenameEl.textContent = '';
         return;
       }
       dropzone.classList.add('has-file');
+      dropzone.classList.toggle('has-doc', isPdf(photo));
       if (filenameEl) filenameEl.textContent = photo.name || '';
-      if (photo.dataUrl && preview) {
+      if (photo.dataUrl && preview && !isPdf(photo)) {
         preview.src = photo.dataUrl;
         preview.alt = photo.name || 'Trip photo';
         dropzone.classList.add('has-image');
       } else {
         dropzone.classList.remove('has-image');
+        if (preview) preview.removeAttribute('src');
       }
     };
 
@@ -149,8 +182,31 @@ const Photos = {
       if (!file) return;
       const meta = { name: file.name, type: file.type || 'unknown', addedAt: new Date().toISOString() };
 
+      if (isPdf(file)) {
+        // Store the PDF itself when it's small enough, so it publishes with
+        // the site; otherwise keep the name so the slot still reads as filled.
+        if (file.size > MAX_STORED_DOC_BYTES) {
+          render(meta);
+          Storage.savePhoto(slotId, meta);
+          showToast(`${file.name} is too large to publish (${formatFileSize(file.size)}). Only the name was kept.`);
+          return;
+        }
+        try {
+          const docUrl = await readAsDataURL(file);
+          const doc = { ...meta, type: 'application/pdf', dataUrl: docUrl };
+          render(doc);
+          if (!Storage.savePhoto(slotId, doc)) {
+            showToast('Shown for this visit only — browser storage is full.');
+          }
+        } catch (err) {
+          console.warn('Could not read PDF', err);
+          showToast('That PDF could not be read. Try another one?');
+        }
+        return;
+      }
+
       if (!isProbablyImage(file)) {
-        // Non-image (e.g. a PDF itinerary): keep the reference, no preview.
+        // Some other document: keep the reference so the slot reads as filled.
         render(meta);
         if (!Storage.savePhoto(slotId, meta)) {
           showToast('Saved for this visit only — browser storage is full.');

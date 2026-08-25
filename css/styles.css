@@ -22,11 +22,11 @@
   --sand-soft: #f0dcb8;
   --foam: #7fd6c9;
 
-  /* Text — white on dark surfaces, near-black on light ones */
+  /* Text — white on dark surfaces, deep blue on light ones */
   --on-dark: #ffffff;
   --on-dark-muted: rgba(255, 255, 255, 0.72);
-  --on-light: #0a1a1f;
-  --on-light-muted: #4a625f;
+  --on-light: #0b2545;        /* deep navy blue — 14.1:1 on --mist */
+  --on-light-muted: #3c5a7d;  /* same hue, dialled back — 6.5:1 on --mist */
 
   --border-light: #d8e3e1;
   --border-dark: rgba(255, 255, 255, 0.16);
@@ -67,6 +67,7 @@ h1, h2, h3, h4 {
   line-height: 1.15;
   letter-spacing: -0.015em;
   font-weight: 600;
+  color: var(--on-light);
 }
 
 p { margin: 0 0 1em; }
@@ -1111,6 +1112,51 @@ body.is-editing .only-view { display: none; }
 .photo-slot.dropzone--square { min-height: 0; aspect-ratio: 1 / 1; }
 
 .postcard .photo-slot { border-radius: 0; border-width: 0 0 1px 0; }
+
+/* ======================================================================== */
+/* A PDF dropped into a frame                                               */
+/* ======================================================================== */
+
+.photo--doc { background: var(--surface-alt); }
+
+.doccard {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  min-height: 220px;
+  height: 100%;
+  padding: 26px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--on-light-muted);
+  background: var(--surface-alt);
+  transition: background 0.2s var(--ease);
+}
+
+.doccard:hover { background: var(--surface); }
+.doccard__icon { font-size: 2rem; line-height: 1; }
+
+.doccard__name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--on-light);
+  max-width: 26ch;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.doccard__note {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sea);
+}
+
+/* In edit mode, a slot holding a PDF shows the doc icon rather than a blank
+   image preview. */
+.dropzone.has-doc .dropzone__icon { opacity: 1; }
+.dropzone.has-doc .dropzone__icon::after { content: ' 📄'; }
 
 /* ======================================================================== */
 /* Long-form article typography                                             */
