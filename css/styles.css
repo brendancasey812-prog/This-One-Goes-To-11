@@ -4,23 +4,31 @@
    ========================================================================== */
 
 :root {
-  /* Deep end of the pool */
-  --deep-navy: #071c2a;
-  --deep-ocean: #0c2c3f;
-  --deep-pine: #0e3630;
-  --sea: #17605c;
-  --sea-bright: #2c8a80;
+  /* Clear water, from the shallows down to the drop-off. Every surface on the
+     site is drawn from this one scale, so the whole page reads as water. */
 
-  /* Light end */
-  --mist: #f2f6f5;
-  --mist-warm: #f8f6f0;
+  /* The depths — nav, footer, the sections that carry white type */
+  --deep-navy: #0a5570;   /* deepest, 8.3:1 with white */
+  --deep-ocean: #0d6280;  /* 6.8:1 with white */
+  --deep-pine: #0f6a80;   /* 6.2:1 with white */
+  --sea: #0f6a80;         /* links and eyebrows — 5.8:1 on the shallows */
+  --sea-bright: #2ba7b3;
+
+  /* The shallows — sections that carry deep-blue type */
+  --mist: #eafaf8;
+  --mist-warm: #f2fcfb;
   --surface: #ffffff;
-  --surface-alt: #e7eeed;
+  --surface-alt: #d4f2ef;
+
+  /* Sunlit band used for the hero and each trip header */
+  --shallow-01: #e8faf7;
+  --shallow-02: #9ce4e2;
+  --shallow-03: #5ccbcf;  /* deepest hero stop — 5.0:1 with the muted ink */
 
   /* Accents */
   --sand: #e0b874;
   --sand-soft: #f0dcb8;
-  --foam: #7fd6c9;
+  --foam: #7fe8dd;
 
   /* Clear water — sunlit shallows through to the drop-off. Used for the
      cards that link between pages. Stops stay light enough that the ink
@@ -40,11 +48,11 @@
   --on-light: #0b2545;        /* deep navy blue — 14.1:1 on --mist */
   --on-light-muted: #3c5a7d;  /* same hue, dialled back — 6.5:1 on --mist */
 
-  --border-light: #d8e3e1;
+  --border-light: #c2e8e4;
   --border-dark: rgba(255, 255, 255, 0.16);
 
-  --shadow-soft: 0 12px 30px -18px rgba(7, 28, 42, 0.35);
-  --shadow-lift: 0 24px 55px -24px rgba(7, 28, 42, 0.45);
+  --shadow-soft: 0 12px 30px -18px rgba(10, 85, 112, 0.32);
+  --shadow-lift: 0 24px 55px -24px rgba(10, 85, 112, 0.42);
 
   --radius-lg: 24px;
   --radius-md: 16px;
@@ -122,7 +130,7 @@ a { color: var(--sea); }
   position: sticky;
   top: 0;
   z-index: 60;
-  background: rgba(7, 28, 42, 0.82);
+  background: rgba(10, 85, 112, 0.86);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-dark);
@@ -223,11 +231,11 @@ a { color: var(--sea); }
 .btn--primary:hover { background: var(--sand-soft); }
 
 .btn--ghost {
-  background: transparent;
-  border-color: rgba(255, 255, 255, 0.35);
-  color: var(--on-dark);
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(8, 48, 74, 0.25);
+  color: var(--ink-water);
 }
-.btn--ghost:hover { background: rgba(255, 255, 255, 0.1); }
+.btn--ghost:hover { background: rgba(255, 255, 255, 0.9); }
 
 .btn--outline {
   background: transparent;
@@ -257,7 +265,7 @@ a { color: var(--sea); }
   border-radius: var(--radius-md);
   border: 2px dashed rgba(255, 255, 255, 0.28);
   background:
-    linear-gradient(150deg, rgba(23, 96, 92, 0.35), rgba(7, 28, 42, 0.5)),
+    linear-gradient(150deg, rgba(43, 167, 179, 0.35), rgba(10, 85, 112, 0.55)),
     var(--deep-ocean);
   color: var(--on-dark);
   transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
@@ -326,7 +334,7 @@ a { color: var(--sea); }
   opacity: 1;
   position: relative;
   z-index: 2;
-  text-shadow: 0 2px 12px rgba(7, 28, 42, 0.9);
+  text-shadow: 0 2px 12px rgba(10, 85, 112, 0.9);
 }
 
 .dropzone.has-image { border-style: solid; border-color: rgba(255, 255, 255, 0.18); }
@@ -343,7 +351,7 @@ a { color: var(--sea); }
   height: 30px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(7, 28, 42, 0.7);
+  background: rgba(10, 85, 112, 0.75);
   color: var(--on-dark);
   font-size: 1rem;
   line-height: 1;
@@ -368,8 +376,10 @@ a { color: var(--sea); }
 .hero {
   position: relative;
   background:
-    radial-gradient(1000px 500px at 82% -10%, rgba(44, 138, 128, 0.5), transparent 60%),
-    linear-gradient(165deg, var(--deep-navy) 0%, var(--deep-ocean) 45%, var(--deep-pine) 100%);
+    radial-gradient(900px 420px at 18% -10%, rgba(255, 255, 255, 0.75), transparent 62%),
+    repeating-linear-gradient(112deg, rgba(255, 255, 255, 0.16) 0 3px, transparent 3px 26px),
+    repeating-linear-gradient(-104deg, rgba(255, 255, 255, 0.10) 0 2px, transparent 2px 34px),
+    linear-gradient(168deg, var(--shallow-01) 0%, var(--shallow-02) 46%, var(--shallow-03) 100%);
   padding: 84px 0 96px;
   overflow: hidden;
 }
@@ -448,12 +458,16 @@ a { color: var(--sea); }
 
 .section { padding: 92px 0; }
 .section--light { background: var(--mist); }
-.section--warm { background: var(--mist-warm); }
+.section--warm { background: linear-gradient(180deg, var(--mist-warm), var(--surface-alt)); }
 .section--deep {
-  background: linear-gradient(170deg, var(--deep-pine), var(--deep-navy));
+  background:
+    repeating-linear-gradient(108deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 30px),
+    linear-gradient(170deg, var(--deep-pine), var(--deep-navy));
 }
 .section--ocean {
-  background: linear-gradient(160deg, var(--deep-ocean), var(--deep-navy) 70%);
+  background:
+    repeating-linear-gradient(-108deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 30px),
+    linear-gradient(160deg, var(--deep-ocean), var(--deep-navy) 70%);
 }
 
 .section__head { max-width: 60ch; margin-bottom: 44px; }
@@ -643,7 +657,7 @@ a { color: var(--sea); }
 }
 
 .chip--sand { background: var(--sand-soft); color: #6b4d15; }
-.chip--dark { background: rgba(255, 255, 255, 0.12); color: var(--on-dark); }
+.chip--dark { background: rgba(255, 255, 255, 0.6); color: var(--ink-water); }
 
 .field-title,
 .field-line,
@@ -1039,7 +1053,7 @@ a { color: var(--sea); }
   gap: 10px;
   padding: 10px 16px;
   border-radius: 999px;
-  background: rgba(7, 28, 42, 0.94);
+  background: rgba(10, 85, 112, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-dark);
@@ -1309,8 +1323,10 @@ body.is-editing .only-view { display: none; }
 .trip-head {
   position: relative;
   background:
-    radial-gradient(900px 460px at 78% -15%, rgba(44, 138, 128, 0.45), transparent 62%),
-    linear-gradient(165deg, var(--deep-navy) 0%, var(--deep-ocean) 50%, var(--deep-pine) 100%);
+    radial-gradient(880px 400px at 82% -12%, rgba(255, 255, 255, 0.72), transparent 60%),
+    repeating-linear-gradient(-112deg, rgba(255, 255, 255, 0.16) 0 3px, transparent 3px 26px),
+    repeating-linear-gradient(104deg, rgba(255, 255, 255, 0.10) 0 2px, transparent 2px 34px),
+    linear-gradient(200deg, var(--shallow-01) 0%, var(--shallow-02) 48%, var(--shallow-03) 100%);
   padding: 76px 0 84px;
   overflow: hidden;
 }
@@ -1525,19 +1541,18 @@ body.is-editing .only-view { display: none; }
 .jumpbar a {
   padding: 8px 18px;
   border-radius: 999px;
-  border: 1px solid rgba(127, 214, 201, 0.42);
-  background: rgba(76, 198, 198, 0.16);
-  color: var(--on-dark);
+  border: 1px solid rgba(8, 48, 74, 0.2);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink-water);
   text-decoration: none;
   font-size: 0.86rem;
   font-weight: 500;
-  transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
 .jumpbar a:hover {
-  background: var(--lagoon-mid);
-  border-color: var(--lagoon-light);
-  color: var(--ink-water);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(8, 48, 74, 0.35);
 }
 
 .jumpbar a:focus-visible { outline: 2px solid var(--sand); outline-offset: 2px; }
