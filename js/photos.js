@@ -124,11 +124,14 @@ const Photos = {
         return `<figure class="photo ${classes}"><img src="${photo.dataUrl}" alt="${escapeHTML(photo.name || label || 'Trip photo')}" loading="lazy" /></figure>`;
       }
       if (!placeholder) return '';
+      // An empty frame is a to-do, so it offers the action rather than just
+      // announcing itself. The link opens the editor scrolled to this frame.
+      const page = window.location.pathname.split('/').pop() || 'index.html';
       return `
-        <div class="photo-slot ${classes}" role="img" aria-label="Photo to come: ${escapeHTML(label)}">
+        <div class="photo-slot ${classes}">
           <span class="photo-slot__icon" aria-hidden="true">${icon}</span>
           <span class="photo-slot__label">${escapeHTML(label)}</span>
-          <span class="photo-slot__note">Photo coming soon</span>
+          <a class="photo-slot__add" href="${page}?edit#${slotId}-input">Add a photo</a>
         </div>
       `;
     }
@@ -138,6 +141,7 @@ const Photos = {
         <button type="button" class="dropzone__clear" aria-label="Remove this photo">&times;</button>
         <span class="dropzone__icon" aria-hidden="true">${icon}</span>
         <span class="dropzone__label">${label}</span>
+        <span class="dropzone__cta">Choose a file</span>
         <span class="dropzone__hint">${hint}</span>
         <span class="dropzone__filename"></span>
         <input type="file" id="${slotId}-input" accept="${ACCEPT_ATTR}" />

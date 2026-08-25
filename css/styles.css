@@ -295,6 +295,27 @@ a { color: var(--sea); }
   max-width: 24ch;
 }
 
+/* An explicit button so the box reads as clickable, not just droppable.
+   The file input covers the whole label, so this is purely an affordance. */
+.dropzone__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 4px 0 2px;
+  padding: 9px 20px;
+  border-radius: 999px;
+  background: var(--sand);
+  color: #3b2a0a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s var(--ease);
+}
+
+.dropzone__cta::before { content: '＋'; font-size: 1.05em; line-height: 1; }
+.dropzone:hover .dropzone__cta { background: var(--sand-soft); }
+.dropzone.has-image .dropzone__cta,
+.dropzone.has-doc .dropzone__cta { display: none; }
+
 .dropzone__hint {
   font-size: 0.78rem;
   color: var(--on-dark-muted);
@@ -1162,6 +1183,41 @@ body.is-editing .only-view { display: none; }
   text-transform: uppercase;
 }
 
+/* An empty frame offers the action rather than just announcing itself. */
+.photo-slot__add {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 4px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--slot-border);
+  background: var(--surface);
+  color: var(--sea);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.photo-slot__add::before { content: '＋'; font-size: 1.05em; line-height: 1; }
+
+.photo-slot__add:hover {
+  background: var(--sand);
+  border-color: var(--sand);
+  color: #3b2a0a;
+  transform: translateY(-1px);
+}
+
+.photo-slot__add:focus-visible { outline: 2px solid var(--sea); outline-offset: 2px; }
+
+.on-dark .photo-slot__add {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--on-dark);
+}
+.on-dark .photo-slot__add:hover { background: var(--sand); border-color: var(--sand); color: #3b2a0a; }
+
 .on-dark .photo-slot {
   --slot-border: var(--border-dark);
   --slot-hatch: rgba(255, 255, 255, 0.03);
@@ -1346,6 +1402,41 @@ body.is-editing .only-view { display: none; }
   gap: 10px;
   align-items: center;
   margin-top: 26px;
+}
+
+/* Two labelled blocks under the trip title: the facts, then the contents.
+   Each carries its own heading so nothing reads as loose scattered pills. */
+.head-groups {
+  display: grid;
+  gap: 26px;
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(8, 48, 74, 0.14);
+}
+
+.head-group__title {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--ink-water-muted);
+  margin: 0 0 12px;
+}
+
+.head-group__items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Four contents links sit as an even 2x2 rather than wrapping 3-and-1. */
+.head-group__items.jumpbar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 520px;
 }
 
 /* ======================================================================== */
@@ -1535,11 +1626,13 @@ body.is-editing .only-view { display: none; }
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 30px;
 }
 
 .jumpbar a {
-  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
   border-radius: 999px;
   border: 1px solid rgba(8, 48, 74, 0.2);
   background: rgba(255, 255, 255, 0.55);
@@ -1548,6 +1641,13 @@ body.is-editing .only-view { display: none; }
   font-size: 0.86rem;
   font-weight: 500;
   transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.jumpbar a::before {
+  content: '↓';
+  font-size: 0.8em;
+  opacity: 0.55;
+  flex: none;
 }
 
 .jumpbar a:hover {
@@ -1588,5 +1688,6 @@ body.is-editing .only-view { display: none; }
 @media (max-width: 620px) {
   .eleven__item { grid-template-columns: 1fr; gap: 16px; padding: 24px 22px; }
   .callout { padding: 24px 22px; }
+  .head-group__items.jumpbar { grid-template-columns: minmax(0, 1fr); }
 }
 
