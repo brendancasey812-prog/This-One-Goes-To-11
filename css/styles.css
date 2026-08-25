@@ -1039,3 +1039,436 @@ body.is-editing .site-footer { padding-bottom: 90px; }
 .only-edit { display: none; }
 body.is-editing .only-edit { display: block; }
 body.is-editing .only-view { display: none; }
+
+/* ======================================================================== */
+/* Empty photo frames, waiting on the real picture                          */
+/* ======================================================================== */
+
+.photo-slot {
+  /* Palette lives in tokens so a frame can be flipped to the light or dark
+     set independently of the section it happens to sit in. */
+  --slot-border: var(--border-light);
+  --slot-hatch: rgba(23, 96, 92, 0.045);
+  --slot-ground: var(--surface-alt);
+  --slot-text: var(--on-light-muted);
+  --slot-label: var(--on-light);
+
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 220px;
+  padding: 26px;
+  text-align: center;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--slot-border);
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 10px, var(--slot-hatch) 10px 20px),
+    var(--slot-ground);
+  color: var(--slot-text);
+}
+
+.photo-slot__icon { font-size: 1.6rem; line-height: 1; opacity: 0.5; }
+
+.photo-slot__label {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--slot-label);
+  max-width: 26ch;
+  line-height: 1.35;
+}
+
+.photo-slot__note {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.on-dark .photo-slot {
+  --slot-border: var(--border-dark);
+  --slot-hatch: rgba(255, 255, 255, 0.03);
+  --slot-ground: rgba(255, 255, 255, 0.05);
+  --slot-text: var(--on-dark-muted);
+  --slot-label: var(--on-dark);
+}
+
+/* A frame sitting on a white card keeps the light palette even when the
+   section around the card is dark — otherwise it renders white on white. */
+.postcard .photo-slot,
+.city .photo-slot,
+.callout:not(.callout--dark) .photo-slot {
+  --slot-border: var(--border-light);
+  --slot-hatch: rgba(23, 96, 92, 0.045);
+  --slot-ground: var(--surface-alt);
+  --slot-text: var(--on-light-muted);
+  --slot-label: var(--on-light);
+}
+
+.photo-slot.dropzone--tall { min-height: 420px; }
+.photo-slot.dropzone--wide { min-height: 320px; }
+.photo-slot.dropzone--short { min-height: 150px; }
+.photo-slot.dropzone--square { min-height: 0; aspect-ratio: 1 / 1; }
+
+.postcard .photo-slot { border-radius: 0; border-width: 0 0 1px 0; }
+
+/* ======================================================================== */
+/* Long-form article typography                                             */
+/* ======================================================================== */
+
+.prose { max-width: 68ch; }
+.prose > *:last-child { margin-bottom: 0; }
+
+.prose p { font-size: 1.04rem; margin-bottom: 1.1em; }
+
+.prose h3 {
+  font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+  margin-top: 1.8em;
+  margin-bottom: 0.5em;
+}
+
+.prose h3:first-child { margin-top: 0; }
+
+.prose ul, .prose ol { margin: 0 0 1.2em; padding-left: 1.3em; }
+.prose li { margin-bottom: 0.5em; font-size: 1.02rem; }
+.prose li::marker { color: var(--sea-bright); }
+
+.prose a { color: var(--sea); text-underline-offset: 3px; }
+.on-dark .prose a { color: var(--foam); }
+
+.prose strong { font-weight: 600; }
+
+.lede {
+  font-size: clamp(1.08rem, 1.7vw, 1.28rem);
+  line-height: 1.55;
+  max-width: 54ch;
+}
+
+/* A quiet aside for prices, distances, disclosures */
+.fineprint {
+  font-size: 0.85rem;
+  color: var(--on-light-muted);
+  font-style: italic;
+}
+
+.on-dark .fineprint { color: var(--on-dark-muted); }
+
+/* ======================================================================== */
+/* The dial — 11 notches, because that is the whole point                   */
+/* ======================================================================== */
+
+.dial {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-dark);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.dial__notches { display: flex; align-items: flex-end; gap: 4px; height: 20px; }
+
+.dial__notch {
+  width: 4px;
+  height: 9px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: height 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.dial__notch.is-on { background: var(--foam); height: 14px; }
+.dial__notch--peak.is-on { background: var(--sand); height: 20px; }
+
+.dial__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sand);
+}
+
+.on-light .dial { border-color: var(--border-light); background: var(--surface); }
+.on-light .dial__notch { background: var(--border-light); }
+.on-light .dial__notch.is-on { background: var(--sea-bright); }
+.on-light .dial__notch--peak.is-on { background: var(--sand); }
+.on-light .dial__label { color: var(--sea); }
+
+/* ======================================================================== */
+/* Trip page header                                                         */
+/* ======================================================================== */
+
+.trip-head {
+  position: relative;
+  background:
+    radial-gradient(900px 460px at 78% -15%, rgba(44, 138, 128, 0.45), transparent 62%),
+    linear-gradient(165deg, var(--deep-navy) 0%, var(--deep-ocean) 50%, var(--deep-pine) 100%);
+  padding: 76px 0 84px;
+  overflow: hidden;
+}
+
+.trip-head__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 52px;
+  align-items: center;
+}
+
+.trip-head__title { font-size: clamp(2.4rem, 5.2vw, 3.7rem); margin-bottom: 0.3em; }
+
+.trip-head__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 26px;
+}
+
+/* ======================================================================== */
+/* Callout boxes — timing, tips, logistics                                  */
+/* ======================================================================== */
+
+.callout {
+  border-radius: var(--radius-lg);
+  padding: 30px 32px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+}
+
+.callout + .callout { margin-top: 22px; }
+
+.callout__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.6em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.callout__title::before {
+  content: '';
+  width: 4px;
+  align-self: stretch;
+  min-height: 1.1em;
+  border-radius: 2px;
+  background: var(--sand);
+  flex: none;
+}
+
+.callout ul { margin: 0; padding-left: 1.2em; }
+.callout li { margin-bottom: 0.55em; }
+.callout li:last-child { margin-bottom: 0; }
+.callout > *:last-child { margin-bottom: 0; }
+
+.callout--dark {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-dark);
+  box-shadow: none;
+  color: var(--on-dark);
+}
+
+.callout--tight { padding: 24px 26px; }
+
+.callout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px;
+  align-items: start;
+}
+
+.callout-grid .callout + .callout { margin-top: 0; }
+
+/* ======================================================================== */
+/* The Top 11 list                                                          */
+/* ======================================================================== */
+
+.eleven { display: grid; gap: 22px; }
+
+.eleven__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 24px;
+  padding: 28px 30px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.eleven__item:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+
+.eleven__num {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  flex: none;
+  background: linear-gradient(150deg, var(--sea-bright), var(--deep-pine));
+  color: var(--on-dark);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Number eleven is the one that goes past the end of the scale. */
+.eleven__item--peak .eleven__num { background: linear-gradient(150deg, var(--sand), #c9964a); color: #3b2a0a; }
+.eleven__item--peak { border-color: var(--sand); }
+
+.eleven__title { font-size: 1.28rem; margin-bottom: 0.4em; }
+
+/* Keep the measure readable even though the card itself is wide. */
+.eleven__body p,
+.eleven__body > ul,
+.eleven__body > ol { max-width: 72ch; }
+
+.eleven__body p { font-size: 1rem; margin-bottom: 0.9em; }
+.eleven__body > ul, .eleven__body > ol { padding-left: 1.3em; margin: 0 0 1em; }
+.eleven__body li { margin-bottom: 0.5em; }
+.eleven__body li::marker { color: var(--sea-bright); }
+.eleven__body > *:last-child { margin-bottom: 0; }
+
+.eleven__media { margin-top: 18px; max-width: 620px; }
+
+/* ======================================================================== */
+/* City / stop profile cards                                                */
+/* ======================================================================== */
+
+/* Two up, so four cities land as a clean 2x2 rather than 3 and an orphan. */
+.city-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 820px) {
+  .city-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.city {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+}
+
+.city .photo-slot,
+.city .dropzone { border-radius: 0; border-left: 0; border-right: 0; border-top: 0; min-height: 170px; }
+.city .photo img { height: 170px; object-fit: cover; }
+
+.city__body { padding: 24px 26px 26px; flex: 1; }
+.city__name { font-size: 1.3rem; margin-bottom: 0.15em; }
+
+.city__tag {
+  display: block;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sea);
+  margin-bottom: 0.9em;
+}
+
+.city__body p { font-size: 0.96rem; margin-bottom: 0.8em; }
+.city__body > *:last-child { margin-bottom: 0; }
+
+/* ======================================================================== */
+/* Pager between trips                                                      */
+/* ======================================================================== */
+
+.pager {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.pager__link {
+  display: block;
+  padding: 28px 30px;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--on-dark);
+  border: 1px solid var(--border-dark);
+  background: linear-gradient(150deg, var(--sea), var(--deep-ocean));
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.pager__link--alt { background: linear-gradient(150deg, var(--deep-pine), var(--deep-navy)); }
+.pager__link:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+
+.pager__kicker {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sand);
+  margin-bottom: 8px;
+}
+
+.pager__title { font-size: 1.35rem; margin-bottom: 0.3em; }
+.pager__link p { color: var(--on-dark-muted); font-size: 0.95rem; margin: 0; }
+
+/* ======================================================================== */
+/* Jump links inside a long article                                         */
+/* ======================================================================== */
+
+.jumpbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.jumpbar a {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: var(--on-dark);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 500;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.jumpbar a:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--foam); }
+
+/* Anchored headings shouldn't hide under the sticky nav. */
+[id] { scroll-margin-top: 90px; }
+
+/* ======================================================================== */
+/* Two-column article layout: prose beside a sticky frame                   */
+/* ======================================================================== */
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 52px;
+  align-items: start;
+}
+
+.split--reverse .split__aside { order: -1; }
+
+.split__aside { position: sticky; top: 92px; }
+
+@media (max-width: 900px) {
+  .trip-head__grid,
+  .split { grid-template-columns: 1fr; gap: 34px; }
+
+  .split--reverse .split__aside { order: 0; }
+  .split__aside { position: static; }
+  .trip-head { padding: 54px 0 62px; }
+  .photo-slot.dropzone--tall { min-height: 320px; }
+}
+
+@media (max-width: 620px) {
+  .eleven__item { grid-template-columns: 1fr; gap: 16px; padding: 24px 22px; }
+  .callout { padding: 24px 22px; }
+}
+

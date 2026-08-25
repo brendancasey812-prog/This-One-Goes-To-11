@@ -49,8 +49,6 @@ function buildExportPayload() {
     generatedAt: new Date().toISOString(),
     about: Storage.getAbout(),
     captions: Storage.getCaptions(),
-    trips: Storage.getTrips(),
-    recommendations: Storage.getRecommendations(),
     photos: Object.fromEntries(Object.entries(Storage.getPhotos()).filter(([, photo]) => photo)),
   };
 }
@@ -105,8 +103,6 @@ function initEditToolbar() {
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result);
-        if (data.trips) Storage.saveTrips(data.trips);
-        if (data.recommendations) Storage.saveRecommendations(data.recommendations);
         if (data.captions) localStorage.setItem(STORAGE_KEYS.captions, JSON.stringify(data.captions));
         if (data.about) localStorage.setItem(STORAGE_KEYS.about, JSON.stringify(data.about));
         if (data.photos) localStorage.setItem(STORAGE_KEYS.photos, JSON.stringify(data.photos));

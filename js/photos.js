@@ -76,13 +76,30 @@ const Photos = {
   ACCEPT_ATTR,
 
   /** Markup for a photo slot.
-   *  View mode renders the photo as a plain image, or nothing when the slot
-   *  is empty. Edit mode renders the drop target. */
-  markup({ slotId, label, hint = 'Drop a photo here — JPG, PNG, WEBP, HEIC, GIF or PDF', icon = '📷', classes = '' }) {
+   *  View mode renders the photo as a plain image; an empty slot becomes a
+   *  quiet "coming soon" frame so the layout still reads, unless the caller
+   *  passes placeholder:false. Edit mode always renders the drop target. */
+  markup({
+    slotId,
+    label,
+    hint = 'Drop a photo here — JPG, PNG, WEBP, HEIC, GIF or PDF',
+    icon = '📷',
+    classes = '',
+    placeholder = true,
+  }) {
     if (typeof EditMode !== 'undefined' && !EditMode.active) {
       const photo = Storage.getPhoto(slotId);
-      if (!photo || !photo.dataUrl) return '';
-      return `<figure class="photo ${classes}"><img src="${photo.dataUrl}" alt="${escapeHTML(photo.name || 'Trip photo')}" loading="lazy" /></figure>`;
+      if (photo && photo.dataUrl) {
+        return `<figure class="photo ${classes}"><img src="${photo.dataUrl}" alt="${escapeHTML(photo.name || label || 'Trip photo')}" loading="lazy" /></figure>`;
+      }
+      if (!placeholder) return '';
+      return `
+        <div class="photo-slot ${classes}" role="img" aria-label="Photo to come: ${escapeHTML(label)}">
+          <span class="photo-slot__icon" aria-hidden="true">${icon}</span>
+          <span class="photo-slot__label">${escapeHTML(label)}</span>
+          <span class="photo-slot__note">Photo coming soon</span>
+        </div>
+      `;
     }
     return `
       <label class="dropzone ${classes}" for="${slotId}-input" data-slot="${slotId}">
