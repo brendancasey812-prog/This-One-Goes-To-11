@@ -91,23 +91,29 @@ free way to put a login in front of a static site.
 
 ## Photo drop boxes
 
-Every photo placeholder is a drop target in edit mode. Drag a file onto it, or
-click to browse:
+Every frame takes **any file** — the input is unrestricted, so nothing is greyed
+out in the picker and a phone still offers its camera, scanner, photo library and
+files app. What happens next depends on whether the browser can decode it:
 
-- **Photos, shown inline:** JPG, JPEG, JFIF, PNG, WEBP, AVIF, GIF, BMP, SVG
-- **PDFs (scans, itineraries, tickets):** stored whole and published as a card that
-  opens or downloads the file
-- **Accepted, name only:** HEIC, HEIF, TIFF — browsers can't decode these, so the
-  filename is kept and you'll see a note
+1. **It decodes to a picture** → resized to a 1600px longest edge, re-encoded, and
+   shown inline. Covers JPG, PNG, WEBP, AVIF, GIF, BMP, SVG everywhere.
+2. **It doesn't** → the original file is kept whole and published as a card that
+   opens or downloads it. Covers PDFs, and any format this browser lacks a decoder
+   for. Nothing is ever silently dropped.
+3. **It doesn't and it's over ~1.5 MB** → only the name is kept, with a message
+   saying so, because base64 would overrun the ~5 MB localStorage budget.
 
-On a phone or tablet the same frame offers the camera, the document scanner, the
-photo library and the files app, because the input accepts both `image/*` and
-`application/pdf`.
+### HEIC
 
-Images are resized to a 1600px longest edge before being saved so they fit in browser
-storage. PDFs aren't resizable, so anything over ~1.5 MB keeps its name only rather
-than blowing the storage budget — shrink it first if you want it published. If storage
-fills up, the file still shows for the visit and a note appears.
+`decodeImage()` tries two paths: `createImageBitmap`, which hands the file to the
+**platform** decoder, and then an `<img>` element. On Apple devices the platform
+decoder handles HEIC, so an iPhone photo decodes and is re-encoded as JPEG like any
+other picture. Browsers without a HEIC decoder — Chromium on Linux, for one — fail
+both paths and fall to case 2, attaching the original.
+
+This means HEIC behaviour is browser-dependent by design. If HEIC is attaching
+rather than displaying on the machine you use, the fix is a bundled WASM decoder
+(libheif) rather than anything in this file.
 
 Frames are declared in the HTML, so adding one is a single element:
 

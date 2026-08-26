@@ -6,18 +6,20 @@ const ACCEPTED_EXTENSIONS = [
   '.heic', '.heif', '.tif', '.tiff', '.pdf',
 ];
 
-/* Accept attribute used by every file input on the site. Listing the MIME
-   types as well as the extensions is what makes phones offer "Take Photo",
-   "Scan Document" and the files app alongside the photo library. */
-const ACCEPT_ATTR = `image/*,application/pdf,${ACCEPTED_EXTENSIONS.join(',')}`;
+/* Every frame takes any file. An unrestricted input still offers a phone's
+   camera, scanner and photo library, and it stops the picker greying out
+   formats we can in fact handle (HEIC being the one that kept catching
+   people out). ACCEPTED_EXTENSIONS below is only a decode heuristic now. */
+const ACCEPT_ATTR = '*/*';
 
 /* Longest edge (px) an image is resized to before being stored. */
 const MAX_STORED_EDGE = 1600;
 
-/* A PDF is kept whole — there's nothing to downscale — so it only gets stored
-   inline if it's small enough to survive base64 (~+33%) inside the ~5MB
-   localStorage budget. Anything larger is kept as a named reference. */
-const MAX_STORED_DOC_BYTES = 1_500_000;
+/* A file we can't decode to an image is kept whole — there's nothing to
+   downscale — so it only gets stored inline if it's small enough to survive
+   base64 (~+33%) inside the ~5MB localStorage budget. Anything larger keeps
+   its name only. */
+const MAX_STORED_FILE_BYTES = 1_500_000;
 
 let toastEl = null;
 let toastTimer = null;
@@ -38,6 +40,12 @@ function showToast(message) {
 function formatFileSize(bytes) {
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+/** True for a stored record we kept as a file rather than a decoded image.
+    Records saved before `kind` existed are identified by being PDFs. */
+function isAttachment(photo) {
+  return photo.kind === 'file' || isPdf(photo);
 }
 
 /** True for a File or a stored photo record that is a PDF. */
@@ -63,32 +71,59 @@ function readAsDataURL(file) {
   });
 }
 
-/** Draws the image onto a canvas at a capped size so it fits in localStorage.
-    Resolves with null when the browser cannot decode the format (e.g. HEIC). */
-function downscaleImage(dataUrl, type) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      const longest = Math.max(img.naturalWidth, img.naturalHeight);
-      if (!longest) return resolve(null);
-      const scale = Math.min(1, MAX_STORED_EDGE / longest);
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(img.naturalWidth * scale);
-      canvas.height = Math.round(img.naturalHeight * scale);
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return resolve(null);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      try {
-        const keepAlpha = type === 'image/png' || type === 'image/gif' || type === 'image/webp';
-        resolve(canvas.toDataURL(keepAlpha ? 'image/png' : 'image/jpeg', 0.82));
-      } catch (err) {
-        console.warn('Could not re-encode image', err);
-        resolve(null);
-      }
-    };
-    img.onerror = () => resolve(null);
-    img.src = dataUrl;
-  });
+/** Paints a decoded image onto a capped canvas and returns a data URL.
+    Re-encoding is also what converts an exotic format into something every
+    browser can display — a decoded HEIC comes back out as JPEG. */
+function toCappedDataUrl(source, width, height, type) {
+  const longest = Math.max(width, height);
+  if (!longest) return null;
+  const scale = Math.min(1, MAX_STORED_EDGE / longest);
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(width * scale);
+  canvas.height = Math.round(height * scale);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+  try {
+    const keepAlpha = type === 'image/png' || type === 'image/gif' || type === 'image/webp';
+    return canvas.toDataURL(keepAlpha ? 'image/png' : 'image/jpeg', 0.82);
+  } catch (err) {
+    console.warn('Could not re-encode image', err);
+    return null;
+  }
+}
+
+/** Decodes a file to a capped data URL, or null if this browser can't.
+ *
+ *  Two paths, because they don't cover the same formats. createImageBitmap
+ *  hands the file to the platform decoder, which on Apple devices includes
+ *  HEIC — so an iPhone photo goes straight in. Browsers without a HEIC
+ *  decoder fail both paths and the caller keeps the original file instead. */
+async function decodeImage(file) {
+  if (typeof createImageBitmap === 'function') {
+    try {
+      const bitmap = await createImageBitmap(file);
+      const out = toCappedDataUrl(bitmap, bitmap.width, bitmap.height, file.type);
+      if (bitmap.close) bitmap.close();
+      if (out) return out;
+    } catch (err) {
+      /* Platform can't decode it — try the <img> path below. */
+    }
+  }
+
+  try {
+    const dataUrl = await readAsDataURL(file);
+    const img = await new Promise((resolve) => {
+      const el = new Image();
+      el.onload = () => resolve(el);
+      el.onerror = () => resolve(null);
+      el.src = dataUrl;
+    });
+    if (img) return toCappedDataUrl(img, img.naturalWidth, img.naturalHeight, file.type);
+  } catch (err) {
+    console.warn('Could not read file', err);
+  }
+  return null;
 }
 
 const Photos = {
@@ -101,21 +136,24 @@ const Photos = {
   markup({
     slotId,
     label,
-    hint = 'Photo, scan or PDF — drop it in, or click to upload',
+    hint = 'Any file — HEIC, JPG, PNG, a scan or a PDF',
     icon = '📷',
     classes = '',
     placeholder = true,
   }) {
     if (typeof EditMode !== 'undefined' && !EditMode.active) {
       const photo = Storage.getPhoto(slotId);
-      if (photo && photo.dataUrl && isPdf(photo)) {
-        // A PDF can't be an <img>, so it becomes a card that opens the file.
+      if (photo && photo.dataUrl && isAttachment(photo)) {
+        // Nothing we could decode into an <img>, so it becomes a card that
+        // opens or downloads the original file.
+        const pdf = isPdf(photo);
+        const ext = (photo.name || '').split('.').pop().toUpperCase();
         return `
           <figure class="photo photo--doc ${classes}">
-            <a class="doccard" href="${photo.dataUrl}" target="_blank" rel="noopener" download="${escapeHTML(photo.name || 'document.pdf')}">
-              <span class="doccard__icon" aria-hidden="true">📄</span>
-              <span class="doccard__name">${escapeHTML(photo.name || label || 'Document')}</span>
-              <span class="doccard__note">PDF — open</span>
+            <a class="doccard" href="${photo.dataUrl}" target="_blank" rel="noopener" download="${escapeHTML(photo.name || 'file')}">
+              <span class="doccard__icon" aria-hidden="true">${pdf ? '📄' : '📎'}</span>
+              <span class="doccard__name">${escapeHTML(photo.name || label || 'File')}</span>
+              <span class="doccard__note">${escapeHTML(ext && ext.length <= 5 ? ext : 'File')} — open</span>
             </a>
           </figure>
         `;
@@ -170,9 +208,9 @@ const Photos = {
         return;
       }
       dropzone.classList.add('has-file');
-      dropzone.classList.toggle('has-doc', isPdf(photo));
+      dropzone.classList.toggle('has-doc', isAttachment(photo));
       if (filenameEl) filenameEl.textContent = photo.name || '';
-      if (photo.dataUrl && preview && !isPdf(photo)) {
+      if (photo.dataUrl && preview && !isAttachment(photo)) {
         preview.src = photo.dataUrl;
         preview.alt = photo.name || 'Trip photo';
         dropzone.classList.add('has-image');
@@ -186,61 +224,50 @@ const Photos = {
       if (!file) return;
       const meta = { name: file.name, type: file.type || 'unknown', addedAt: new Date().toISOString() };
 
-      if (isPdf(file)) {
-        // Store the PDF itself when it's small enough, so it publishes with
-        // the site; otherwise keep the name so the slot still reads as filled.
-        if (file.size > MAX_STORED_DOC_BYTES) {
+      /** Falls back to keeping the file itself, so nothing silently vanishes. */
+      const keepAsFile = async (why) => {
+        if (file.size > MAX_STORED_FILE_BYTES) {
           render(meta);
           Storage.savePhoto(slotId, meta);
-          showToast(`${file.name} is too large to publish (${formatFileSize(file.size)}). Only the name was kept.`);
+          showToast(`${file.name} is ${formatFileSize(file.size)} — too large to publish, so only the name was kept.`);
           return;
         }
         try {
-          const docUrl = await readAsDataURL(file);
-          const doc = { ...meta, type: 'application/pdf', dataUrl: docUrl };
-          render(doc);
-          if (!Storage.savePhoto(slotId, doc)) {
+          const dataUrl = await readAsDataURL(file);
+          const record = { ...meta, kind: 'file', dataUrl };
+          render(record);
+          if (!Storage.savePhoto(slotId, record)) {
             showToast('Shown for this visit only — browser storage is full.');
+          } else if (why) {
+            showToast(why);
           }
         } catch (err) {
-          console.warn('Could not read PDF', err);
-          showToast('That PDF could not be read. Try another one?');
+          console.warn('Could not read file', err);
+          showToast('That file could not be read. Try another one?');
         }
-        return;
-      }
+      };
 
-      if (!isProbablyImage(file)) {
-        // Some other document: keep the reference so the slot reads as filled.
-        render(meta);
-        if (!Storage.savePhoto(slotId, meta)) {
-          showToast('Saved for this visit only — browser storage is full.');
+      // A PDF has no image to decode; keep it whole.
+      if (isPdf(file)) return keepAsFile();
+
+      // Try to decode anything that might be a picture, whatever the
+      // extension says. HEIC lands here and succeeds wherever the platform
+      // has a decoder.
+      if (isProbablyImage(file) || !file.type) {
+        const stored = await decodeImage(file);
+        if (stored) {
+          const photo = { ...meta, kind: 'image', dataUrl: stored };
+          render(photo);
+          if (!Storage.savePhoto(slotId, photo)) {
+            showToast('Photo shown for this visit only — browser storage is full.');
+          }
+          return;
         }
-        return;
+        return keepAsFile(`This browser can't display ${file.name}, so it was attached as a file instead.`);
       }
 
-      let dataUrl;
-      try {
-        dataUrl = await readAsDataURL(file);
-      } catch (err) {
-        console.warn('Could not read file', err);
-        showToast('That file could not be read. Try another one?');
-        return;
-      }
-
-      const stored = await downscaleImage(dataUrl, file.type);
-      if (!stored) {
-        // Format the browser cannot decode (HEIC is the usual culprit).
-        render(meta);
-        Storage.savePhoto(slotId, meta);
-        showToast(`${file.name} was added, but this browser can't preview that format.`);
-        return;
-      }
-
-      const photo = { ...meta, dataUrl: stored };
-      render(photo);
-      if (!Storage.savePhoto(slotId, photo)) {
-        showToast('Photo shown for this visit only — browser storage is full.');
-      }
+      // Anything else — a document, an archive, whatever — is kept as a file.
+      return keepAsFile();
     };
 
     if (input) {
