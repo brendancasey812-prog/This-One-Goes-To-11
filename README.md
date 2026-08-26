@@ -12,6 +12,10 @@ vanilla JavaScript you can open straight in a browser.
 Each trip carries its own recommendations as a **Top 11** list, rather than
 pooling them on a separate page.
 
+Each trip header carries two labelled blocks — **At a Glance** (the dial and the
+trip facts) and **In This Guide** (the section links, on a 2x2 grid) — so the
+pills read as two groups rather than loose scattered chips.
+
 ### Adding a trip
 
 Copy `yukon.html`, replace the content, then add a link to it in the `.site-nav__links`
@@ -24,7 +28,7 @@ The site runs in one of two modes, decided by the URL:
 
 | Mode | URL | What you get |
 | --- | --- | --- |
-| **View** | `index.html` | The finished blog. Photos render as photos; frames still waiting on a picture show a quiet "photo coming soon" placeholder. |
+| **View** | `index.html` | The finished blog. Photos render as photos; a frame still waiting on a picture shows what belongs there plus an **Add a photo** button that opens the editor on that exact frame. |
 | **Edit** | `index.html?edit` | Every frame becomes a drop target, captions become editable, plus a toolbar to export your content. |
 
 Nobody can stumble into edit mode by accident, and editing only ever changes
@@ -134,22 +138,33 @@ Object.keys(localStorage).filter(k => k.startsWith('tg11:')).forEach(k => localS
 
 ## Design
 
+Every surface is drawn from one clear-water scale, so the whole site reads as
+water rather than as a dark site with turquoise accents.
+
 | Token | Value | Used for |
 | --- | --- | --- |
-| `--deep-navy` | `#071c2a` | Nav, footer, deepest sections |
-| `--deep-ocean` | `#0c2c3f` | Hero gradient, drop boxes |
-| `--deep-pine` | `#0e3630` | Dark sections, list numbers |
-| `--sea` / `--sea-bright` | `#17605c` / `#2c8a80` | Links, active tab, accents |
-| `--sand` | `#e0b874` | Primary button, focus rings, the 11th notch |
+| `--shallow-01/02/03` | `#e8faf7` → `#5ccbcf` | Hero and trip headers — sunlit shallows with caustic light |
+| `--mist` / `--mist-warm` | `#eafaf8` / `#f2fcfb` | The pale sections, which carry deep-blue type |
+| `--surface-alt` | `#d4f2ef` | Empty photo frames, chips |
+| `--deep-pine` | `#0f6a80` | Deep sections (6.2:1 with white) |
+| `--deep-ocean` | `#0d6280` | Drop boxes (6.8:1 with white) |
+| `--deep-navy` | `#0a5570` | Nav, footer, deepest sections (8.3:1 with white) |
+| `--sea` | `#0f6a80` | Links and eyebrows (5.8:1 on the shallows) |
+| `--sand` | `#e0b874` | The one warm accent: primary button, focus rings, the 11th notch |
 | `--lagoon-*` | `#cdf5ea` → `#4cc6c6` | Clear-water gradient on the page-link cards |
 | `--reef-*` | `#c7f0f7` → `#52c4de` | The bluer, deeper variant of the same |
-| `--ink-water` | `#08304a` | Headings on the water cards (6.4:1 at the deepest stop) |
-| `--on-light` | `#0b2545` | Body and heading type on light surfaces (14.1:1) |
-| `--on-light-muted` | `#3c5a7d` | Secondary type on light surfaces (6.5:1) |
-| `--on-dark` | `#ffffff` | Type on the dark sections |
+| `--ink-water` | `#08304a` | Type on the water cards and the bright headers |
+| `--on-light` | `#0b2545` | Body and heading type on the pale sections (14.1:1) |
+| `--on-light-muted` | `#3c5a7d` | Secondary type on the pale sections (6.5:1) |
+| `--on-dark` | `#ffffff` | Type on the deep sections |
 
-Sections declare `.on-dark` or `.on-light`, which sets white or near-black text and
+Sections declare `.on-dark` or `.on-light`, which sets white or deep-blue text and
 the matching muted tone. Type is Fraunces (display) over Inter (body).
+
+Most of these grounds are gradients, so a contrast checker that reads declared
+CSS colours reports false failures. `scratchpad/pixel2.js`-style verification —
+screenshot the page and sample the rendered pixel behind each text node — is the
+one that tells the truth. Last run: 51 elements, all clear AA.
 
 The dial motif — 11 notches with the last one in sand — is built by `mountDials()`
 from `<span class="dial" data-dial="11"></span>`.
