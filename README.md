@@ -1,4 +1,4 @@
-# This One Goes to 11
+# This Trip Goes to 11
 
 A travel blog. Three tabs, no build step, no dependencies — just HTML, CSS and
 vanilla JavaScript you can open straight in a browser.

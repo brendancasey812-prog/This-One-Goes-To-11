@@ -1,4 +1,4 @@
-/* storage.js — shared localStorage data layer for This One Goes to 11.
+/* storage.js — shared localStorage data layer for This Trip Goes to 11.
  *
  * The written content of the site lives in the HTML. What lives here is the
  * stuff the owner adds from the browser: photos dropped into frames, postcard
