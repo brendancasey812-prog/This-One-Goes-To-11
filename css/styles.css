@@ -367,6 +367,30 @@ a { color: var(--sea); }
 .dropzone.has-file .dropzone__clear,
 .dropzone.has-image .dropzone__clear { display: block; }
 
+/* Offers the decoded photo as a file to commit under assets/, which is how
+   photos get published without spending the browser's storage budget. */
+.dropzone__save {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: none;
+  white-space: nowrap;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(10, 85, 112, 0.85);
+  color: var(--on-dark);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s var(--ease);
+}
+
+.dropzone.has-image .dropzone__save { display: block; }
+.dropzone__save:hover { background: var(--sand); color: #3b2a0a; border-color: var(--sand); }
+
 .dropzone__clear:hover { background: var(--deep-navy); }
 
 /* Size variants */

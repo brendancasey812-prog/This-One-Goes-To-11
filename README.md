@@ -105,15 +105,46 @@ files app. What happens next depends on whether the browser can decode it:
 
 ### HEIC
 
-`decodeImage()` tries two paths: `createImageBitmap`, which hands the file to the
-**platform** decoder, and then an `<img>` element. On Apple devices the platform
-decoder handles HEIC, so an iPhone photo decodes and is re-encoded as JPEG like any
-other picture. Browsers without a HEIC decoder — Chromium on Linux, for one — fail
-both paths and fall to case 2, attaching the original.
+Decoding goes through three stages, stopping at the first that works:
 
-This means HEIC behaviour is browser-dependent by design. If HEIC is attaching
-rather than displaying on the machine you use, the fix is a bundled WASM decoder
-(libheif) rather than anything in this file.
+1. `createImageBitmap` — the platform decoder, which covers HEIC on Apple devices
+2. an `<img>` element — everything else the browser knows natively
+3. **`js/vendor/libheif.js`** — a bundled WASM decoder, fetched lazily the first
+   time a HEIC arrives that stages 1 and 2 couldn't read
+
+So HEIC works in every browser, and a visitor reading the blog never downloads the
+1.2 MB decoder. Verified against real HEIC files: a 293 KB one decodes in ~470 ms,
+a 718 KB one in ~270 ms, both re-encoded to JPEG.
+
+## Two ways to publish a photo
+
+A decoded photo is 400–600 KB as a data URI, and browser storage holds about 5 MB
+total. This site has **28 frames**, so they cannot all live in `content.json` —
+storage runs out somewhere around the tenth photo. There are two routes, and the
+second is the one to use for photos you intend to keep:
+
+| | `content.json` | `assets/` |
+| --- | --- | --- |
+| How | Export from the toolbar | **Save for the site** on a filled frame |
+| Stored as | base64 inside one JSON file | an ordinary `.jpg` in the repo |
+| Ceiling | ~5 MB across every frame | none |
+| Caching | re-downloaded with the JSON | cached per image by the browser |
+| Good for | drafting, a handful of frames | the real photos |
+
+### The assets route
+
+1. Drop the photo into a frame with `?edit` — HEIC included.
+2. Click **Save for the site**. You get `<slot-id>.jpg`, already resized and
+   re-encoded, named after the frame it belongs to.
+3. Commit it to `assets/`.
+4. Point the frame at it in `content.json`:
+
+```json
+{ "photos": { "yukon-hero": { "src": "assets/yukon-hero.jpg" } } }
+```
+
+A record with `src` is read exactly like one with `dataUrl`, so frames can mix the
+two freely while you work. Editing warns you once browser storage passes 60% full.
 
 Frames are declared in the HTML, so adding one is a single element:
 

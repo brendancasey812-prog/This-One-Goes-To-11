@@ -79,6 +79,19 @@ const Storage = {
     return writeJSON(STORAGE_KEYS.photos, photos);
   },
 
+  /** Roughly how much of the ~5MB localStorage budget the photos occupy.
+      A decoded photo is 400-600KB, so a site with many frames runs out well
+      before they are all filled — hence the assets/ route (see README). */
+  photoStorageUsage() {
+    let bytes = 0;
+    try {
+      bytes = (localStorage.getItem(STORAGE_KEYS.photos) || '').length;
+    } catch (err) {
+      return { bytes: 0, ratio: 0 };
+    }
+    return { bytes, ratio: bytes / 5_000_000 };
+  },
+
   removePhoto(slotId) {
     const photos = readJSON(STORAGE_KEYS.photos, {});
     // A null marks the slot as cleared, which also hides a published photo.

@@ -48,6 +48,84 @@ function isAttachment(photo) {
   return photo.kind === 'file' || isPdf(photo);
 }
 
+/** True for a file that looks like HEIC/HEIF by type or extension. */
+function isHeic(file) {
+  const type = (file.type || '').toLowerCase();
+  const name = (file.name || '').toLowerCase();
+  return type.includes('heic') || type.includes('heif') ||
+         name.endsWith('.heic') || name.endsWith('.heif');
+}
+
+/* libheif is 1.2MB, so it is fetched only when a HEIC actually turns up and
+   the browser could not decode it itself. Safari and iOS never get here. */
+const LIBHEIF_SRC = 'js/vendor/libheif.js';
+let libheifLoad = null;
+
+/* The script sets `window.libheif` to a factory that resolves to the module;
+   HeifDecoder hangs off the resolved module, not off the global. */
+function loadLibheif() {
+  if (libheifLoad) return libheifLoad;
+  libheifLoad = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = LIBHEIF_SRC;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('could not load the HEIC decoder'));
+    document.head.appendChild(script);
+  }).then(() => {
+    const factory = window.libheif;
+    return typeof factory === 'function' ? factory() : factory;
+  });
+  return libheifLoad;
+}
+
+/** Decodes a HEIC file to a capped data URL using the bundled decoder.
+    Returns null if the decoder is unavailable or the file won't decode. */
+async function decodeHeic(file) {
+  let lib;
+  try {
+    lib = await loadLibheif();
+  } catch (err) {
+    console.warn('HEIC decoder unavailable', err);
+    return null;
+  }
+  if (!lib || typeof lib.HeifDecoder !== 'function') return null;
+
+  try {
+    const buffer = await file.arrayBuffer();
+    const images = new lib.HeifDecoder().decode(new Uint8Array(buffer));
+    if (!images || !images.length) return null;
+
+    const image = images[0];
+    const width = image.get_width();
+    const height = image.get_height();
+    if (!width || !height) return null;
+
+    // libheif paints into an ImageData, so go via a full-size canvas first
+    // and let toCappedDataUrl do the resizing from there.
+    const full = document.createElement('canvas');
+    full.width = width;
+    full.height = height;
+    const fullCtx = full.getContext('2d');
+    if (!fullCtx) return null;
+    const imageData = fullCtx.createImageData(width, height);
+
+    try {
+      await new Promise((resolve, reject) => {
+        image.display(imageData, (out) => (out ? resolve(out) : reject(new Error('decode failed'))));
+      });
+    } finally {
+      // The decoded frame lives in WASM memory until it's released.
+      if (typeof image.free === 'function') image.free();
+    }
+    fullCtx.putImageData(imageData, 0, 0);
+
+    return toCappedDataUrl(full, width, height, 'image/jpeg');
+  } catch (err) {
+    console.warn('Could not decode HEIC', err);
+    return null;
+  }
+}
+
 /** True for a File or a stored photo record that is a PDF. */
 function isPdf(fileOrPhoto) {
   const type = (fileOrPhoto.type || '').toLowerCase();
@@ -158,8 +236,11 @@ const Photos = {
           </figure>
         `;
       }
-      if (photo && photo.dataUrl) {
-        return `<figure class="photo ${classes}"><img src="${photo.dataUrl}" alt="${escapeHTML(photo.name || label || 'Trip photo')}" loading="lazy" /></figure>`;
+      // `src` points at a file committed under assets/ — the way to publish
+      // photos without spending the browser's storage budget on them.
+      const source = (photo && photo.src) || (photo && photo.dataUrl);
+      if (source) {
+        return `<figure class="photo ${classes}"><img src="${escapeHTML(source)}" alt="${escapeHTML((photo && photo.name) || label || 'Trip photo')}" loading="lazy" /></figure>`;
       }
       if (!placeholder) return '';
       // An empty frame is a to-do, so it offers the action rather than just
@@ -177,6 +258,7 @@ const Photos = {
       <label class="dropzone ${classes}" for="${slotId}-input" data-slot="${slotId}">
         <img class="dropzone__preview" alt="" />
         <button type="button" class="dropzone__clear" aria-label="Remove this photo">&times;</button>
+        <button type="button" class="dropzone__save" title="Save this photo as a file to commit under assets/">Save for the site</button>
         <span class="dropzone__icon" aria-hidden="true">${icon}</span>
         <span class="dropzone__label">${label}</span>
         <span class="dropzone__cta">Choose a file</span>
@@ -197,6 +279,7 @@ const Photos = {
     const preview = dropzone.querySelector('.dropzone__preview');
     const filenameEl = dropzone.querySelector('.dropzone__filename');
     const clearBtn = dropzone.querySelector('.dropzone__clear');
+    const saveBtn = dropzone.querySelector('.dropzone__save');
 
     if (input && !input.getAttribute('accept')) input.setAttribute('accept', ACCEPT_ATTR);
 
@@ -210,8 +293,9 @@ const Photos = {
       dropzone.classList.add('has-file');
       dropzone.classList.toggle('has-doc', isAttachment(photo));
       if (filenameEl) filenameEl.textContent = photo.name || '';
-      if (photo.dataUrl && preview && !isAttachment(photo)) {
-        preview.src = photo.dataUrl;
+      const shown = photo.src || photo.dataUrl;
+      if (shown && preview && !isAttachment(photo)) {
+        preview.src = shown;
         preview.alt = photo.name || 'Trip photo';
         dropzone.classList.add('has-image');
       } else {
@@ -254,12 +338,25 @@ const Photos = {
       // extension says. HEIC lands here and succeeds wherever the platform
       // has a decoder.
       if (isProbablyImage(file) || !file.type) {
-        const stored = await decodeImage(file);
+        let stored = await decodeImage(file);
+
+        // The platform couldn't read it. If it's a HEIC, fall back to the
+        // bundled decoder rather than demoting an iPhone photo to a file.
+        if (!stored && isHeic(file)) {
+          showToast('Converting HEIC — this takes a moment the first time.');
+          stored = await decodeHeic(file);
+        }
+
         if (stored) {
           const photo = { ...meta, kind: 'image', dataUrl: stored };
           render(photo);
           if (!Storage.savePhoto(slotId, photo)) {
-            showToast('Photo shown for this visit only — browser storage is full.');
+            showToast('Photo shown for this visit only — browser storage is full. Use "Save for the site" and commit it under assets/ instead.');
+          } else {
+            const { ratio } = Storage.photoStorageUsage();
+            if (ratio > 0.6) {
+              showToast(`Browser storage is ${Math.round(ratio * 100)}% full. Use "Save for the site" on these photos and commit them under assets/.`);
+            }
           }
           return;
         }
@@ -301,6 +398,26 @@ const Photos = {
       const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
       if (file) handleFile(file);
     });
+
+    if (saveBtn) {
+      // Downloads the decoded photo named after its slot, so dropping it into
+      // assets/ and adding `"<slot>": {"src": "assets/<slot>.jpg"}` to
+      // content.json publishes it without touching localStorage at all.
+      saveBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const photo = Storage.getPhoto(slotId);
+        if (!photo || !photo.dataUrl) return;
+        const ext = isPdf(photo) ? 'pdf' : (photo.dataUrl.includes('image/png') ? 'png' : 'jpg');
+        const link = document.createElement('a');
+        link.href = photo.dataUrl;
+        link.download = `${slotId}.${ext}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast(`Saved ${slotId}.${ext} — commit it under assets/ to publish it.`);
+      });
+    }
 
     if (clearBtn) {
       clearBtn.addEventListener('click', (e) => {
