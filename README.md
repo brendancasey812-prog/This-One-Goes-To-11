@@ -146,6 +146,14 @@ second is the one to use for photos you intend to keep:
 A record with `src` is read exactly like one with `dataUrl`, so frames can mix the
 two freely while you work. Editing warns you once browser storage passes 60% full.
 
+Several frames may share one file — the About postcard wall reuses shots that also
+appear in the guides, and a `src` costs nothing to point at twice.
+
+Note that the `dropzone--*` classes size the **empty** frame only. A frame holding
+a picture takes that picture's shape, so no background band shows beneath a photo
+whose proportions don't match the placeholder. `dropzone--square` is the exception:
+it keeps its shape and crops to fill.
+
 Frames are declared in the HTML, so adding one is a single element:
 
 ```html

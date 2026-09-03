@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-09-03T00:00:00.000Z",
+  "about": {},
+  "captions": {},
+  "photos": {
+    "yukon-hero": {
+      "name": "Aurora over Whitehorse, night three",
+      "kind": "image",
+      "src": "assets/aurora-whitehorse.jpg"
+    },
+    "norway-map": {
+      "name": "The route: Oslo to Flam to Bergen to Stavanger to Lindesnes",
+      "kind": "image",
+      "src": "assets/norway-route-map.jpg"
+    },
+    "norway-church": {
+      "name": "Borgund Stave Church",
+      "kind": "image",
+      "src": "assets/borgund-stave-church.jpg"
+    },
+    "norway-tunnel": {
+      "name": "Inside the Laerdal Tunnel",
+      "kind": "image",
+      "src": "assets/laerdal-tunnel.jpg"
+    },
+    "norway-under": {
+      "name": "A course at Under, Lindesnes",
+      "kind": "image",
+      "src": "assets/under-lindesnes.jpg"
+    },
+    "postcard-1": {
+      "name": "Aurora over Whitehorse, night three",
+      "kind": "image",
+      "src": "assets/aurora-whitehorse.jpg"
+    },
+    "postcard-2": {
+      "name": "Inside the Laerdal Tunnel",
+      "kind": "image",
+      "src": "assets/laerdal-tunnel.jpg"
+    },
+    "postcard-3": {
+      "name": "Borgund Stave Church",
+      "kind": "image",
+      "src": "assets/borgund-stave-church.jpg"
+    },
+    "postcard-4": {
+      "name": "A course at Under, Lindesnes",
+      "kind": "image",
+      "src": "assets/under-lindesnes.jpg"
+    }
+  }
+}
