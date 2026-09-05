@@ -7,7 +7,7 @@ vanilla JavaScript you can open straight in a browser.
 | --- | --- | --- |
 | **About** | `index.html` | Who I am, what you'll learn, why the dial goes to 11, and the trip index |
 | **Yukon** | `yukon.html` | Aurora Borealis in Whitehorse — why it goes to 11, planning notes, Top 11 things to do, logistics |
-| **Norway** | `norway.html` | Perfect Norway 9-Day Summer Itinerary — driving notes, the four cities, Top 11 stops |
+| **Norway** | `norway.html` | Perfect Norway 9-Day Summer Itinerary — driving notes, then the Top 11 stops organized city by city, with each drive between them |
 
 Each trip carries its own recommendations as a **Top 11** list, rather than
 pooling them on a separate page.
