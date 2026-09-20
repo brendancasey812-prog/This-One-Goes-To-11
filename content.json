@@ -18,6 +18,16 @@
       "kind": "image",
       "src": "assets/borgund-stave-church.jpg"
     },
+    "city-bergen": {
+      "name": "Bryggen's colorful wharf",
+      "kind": "image",
+      "src": "assets/bergen-bryggen.jpg"
+    },
+    "city-oslo": {
+      "name": "Oslo waterfront, from the Opera House roof",
+      "kind": "image",
+      "src": "assets/oslo-opera-house.jpg"
+    },
     "norway-tunnel": {
       "name": "Inside the Laerdal Tunnel",
       "kind": "image",
