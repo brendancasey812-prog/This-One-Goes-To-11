@@ -6,127 +6,132 @@
     "home-hero": {
       "name": "On top of Preikestolen",
       "kind": "image",
-      "src": "assets/home-hero-preikestolen.jpg"
+      "src": "assets/home-hero-preikestolen.jpg?v=20260920"
     },
     "home-why": {
       "name": "Hiking Preikestolen, over the Lysefjord",
       "kind": "image",
-      "src": "assets/preikestolen-crowd.jpg"
+      "src": "assets/preikestolen-crowd.jpg?v=20260920"
     },
     "home-eleven": {
       "name": "Vernal Fall, Yosemite",
       "kind": "image",
-      "src": "assets/extra-yosemite-falls.jpg"
+      "src": "assets/extra-yosemite-falls.jpg?v=20260920"
     },
     "yukon-hero": {
       "name": "Aurora over Whitehorse",
       "kind": "image",
-      "src": "assets/yukon-aurora-bright.png"
+      "src": "assets/yukon-aurora-bright.png?v=20260920"
     },
     "yukon-why": {
       "name": "Greens and pinks, the full hour",
       "kind": "image",
-      "src": "assets/yukon-aurora-couple.jpg"
+      "src": "assets/yukon-aurora-couple.jpg?v=20260920"
     },
     "yukon-night-1": {
       "name": "Night one",
       "kind": "image",
-      "src": "assets/yukon-aurora-bright.png"
+      "src": "assets/yukon-aurora-bright.png?v=20260920"
     },
     "yukon-night-2": {
       "name": "Night two",
       "kind": "image",
-      "src": "assets/yukon-aurora-night2.png"
+      "src": "assets/yukon-aurora-night2.png?v=20260920"
     },
     "yukon-night-3": {
       "name": "Night three",
       "kind": "image",
-      "src": "assets/yukon-aurora-night3.png"
+      "src": "assets/yukon-aurora-night3.png?v=20260920"
     },
     "yukon-dogs": {
       "name": "The team, ten Alaskan huskies",
       "kind": "image",
-      "src": "assets/yukon-sled-team.png"
+      "src": "assets/yukon-sled-team.png?v=20260920"
     },
     "norway-hero": {
       "name": "A fjord under the midnight sun",
       "kind": "image",
-      "src": "assets/norway-fjord-panorama.jpg"
+      "src": "assets/norway-fjord-panorama.jpg?v=20260920"
     },
     "norway-map": {
       "name": "The route: Oslo to Flam to Bergen to Stavanger to Lindesnes",
       "kind": "image",
-      "src": "assets/norway-route-map.jpg"
+      "src": "assets/norway-route-map.jpg?v=20260920"
     },
     "norway-church": {
       "name": "Borgund Stave Church",
       "kind": "image",
-      "src": "assets/borgund-stave-church.jpg"
+      "src": "assets/borgund-stave-church.jpg?v=20260920"
     },
     "city-bergen": {
       "name": "Bryggen's colorful wharf",
       "kind": "image",
-      "src": "assets/bergen-bryggen.jpg"
+      "src": "assets/bergen-bryggen.jpg?v=20260920"
     },
     "city-oslo": {
       "name": "Oslo waterfront, from the Opera House roof",
       "kind": "image",
-      "src": "assets/oslo-opera-house.jpg"
+      "src": "assets/oslo-opera-house.jpg?v=20260920"
     },
     "norway-tunnel": {
       "name": "Inside the Laerdal Tunnel",
       "kind": "image",
-      "src": "assets/laerdal-tunnel.jpg"
+      "src": "assets/laerdal-tunnel.jpg?v=20260920"
     },
     "city-flam": {
       "name": "Flam from above",
       "kind": "image",
-      "src": "assets/flam-valley.jpg"
+      "src": "assets/flam-valley.jpg?v=20260920"
     },
     "norway-stegastein": {
       "name": "The platform at Stegastein",
       "kind": "image",
-      "src": "assets/norway-stegastein.jpg"
+      "src": "assets/norway-stegastein.jpg?v=20260920"
     },
     "norway-fjord": {
       "name": "The Naeroyfjord from the bow",
       "kind": "image",
-      "src": "assets/norway-fjord-bow.jpg"
+      "src": "assets/norway-fjord-bow.jpg?v=20260920"
     },
     "city-stavanger": {
       "name": "Stavanger's Pedersgata restaurant row",
       "kind": "image",
-      "src": "assets/stavanger-pedersgada.jpg"
+      "src": "assets/stavanger-pedersgada.jpg?v=20260920"
     },
     "norway-pulpit": {
       "name": "Preikestolen over the Lysefjord",
       "kind": "image",
-      "src": "assets/preikestolen-crowd.jpg"
+      "src": "assets/preikestolen-crowd.jpg?v=20260920"
     },
     "norway-under": {
       "name": "A course at Under, Lindesnes",
       "kind": "image",
-      "src": "assets/under-lindesnes.jpg"
+      "src": "assets/under-lindesnes.jpg?v=20260920"
     },
     "postcard-1": {
       "name": "Aurora over Whitehorse",
       "kind": "image",
-      "src": "assets/yukon-aurora-bright.png"
+      "src": "assets/yukon-aurora-bright.png?v=20260920"
+    },
+    "postcard-5": {
+      "name": "The team, ten Alaskan huskies",
+      "kind": "image",
+      "src": "assets/yukon-sled-team.png?v=20260920"
     },
     "postcard-2": {
       "name": "Inside the Laerdal Tunnel",
       "kind": "image",
-      "src": "assets/laerdal-tunnel.jpg"
+      "src": "assets/laerdal-tunnel.jpg?v=20260920"
     },
     "postcard-3": {
       "name": "Borgund Stave Church",
       "kind": "image",
-      "src": "assets/borgund-stave-church.jpg"
+      "src": "assets/borgund-stave-church.jpg?v=20260920"
     },
     "postcard-4": {
       "name": "A course at Under, Lindesnes",
       "kind": "image",
-      "src": "assets/under-lindesnes.jpg"
+      "src": "assets/under-lindesnes.jpg?v=20260920"
     }
   }
 }
