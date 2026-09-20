@@ -12,8 +12,19 @@ const ACCEPTED_EXTENSIONS = [
    people out). ACCEPTED_EXTENSIONS below is only a decode heuristic now. */
 const ACCEPT_ATTR = '*/*';
 
-/* Longest edge (px) an image is resized to before being stored. */
+/* Longest edge (px) an image is resized to for the in-browser preview that
+   goes into localStorage. Kept modest because localStorage tops out around
+   5MB total across every frame on the site. */
 const MAX_STORED_EDGE = 1600;
+
+/* Longest edge (px) and JPEG quality used for "Save for the site" — the
+   file that actually gets committed to assets/ and served to every visitor
+   from GitHub Pages' CDN. That file has no localStorage budget to respect,
+   so it targets real sharpness instead: the widest photo frame on this site
+   renders around 580px CSS-wide, so 2400px covers even a 3x-retina phone
+   with headroom to spare. */
+const PUBLISH_MAX_EDGE = 2400;
+const PUBLISH_QUALITY = 0.92;
 
 /* A file we can't decode to an image is kept whole — there's nothing to
    downscale — so it only gets stored inline if it's small enough to survive
@@ -80,7 +91,7 @@ function loadLibheif() {
 
 /** Decodes a HEIC file to a capped data URL using the bundled decoder.
     Returns null if the decoder is unavailable or the file won't decode. */
-async function decodeHeic(file) {
+async function decodeHeic(file, maxEdge = MAX_STORED_EDGE, quality = 0.82) {
   let lib;
   try {
     lib = await loadLibheif();
@@ -119,7 +130,7 @@ async function decodeHeic(file) {
     }
     fullCtx.putImageData(imageData, 0, 0);
 
-    return toCappedDataUrl(full, width, height, 'image/jpeg');
+    return toCappedDataUrl(full, width, height, 'image/jpeg', maxEdge, quality);
   } catch (err) {
     console.warn('Could not decode HEIC', err);
     return null;
@@ -152,10 +163,10 @@ function readAsDataURL(file) {
 /** Paints a decoded image onto a capped canvas and returns a data URL.
     Re-encoding is also what converts an exotic format into something every
     browser can display — a decoded HEIC comes back out as JPEG. */
-function toCappedDataUrl(source, width, height, type) {
+function toCappedDataUrl(source, width, height, type, maxEdge = MAX_STORED_EDGE, quality = 0.82) {
   const longest = Math.max(width, height);
   if (!longest) return null;
-  const scale = Math.min(1, MAX_STORED_EDGE / longest);
+  const scale = Math.min(1, maxEdge / longest);
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(width * scale);
   canvas.height = Math.round(height * scale);
@@ -164,7 +175,7 @@ function toCappedDataUrl(source, width, height, type) {
   ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
   try {
     const keepAlpha = type === 'image/png' || type === 'image/gif' || type === 'image/webp';
-    return canvas.toDataURL(keepAlpha ? 'image/png' : 'image/jpeg', 0.82);
+    return canvas.toDataURL(keepAlpha ? 'image/png' : 'image/jpeg', keepAlpha ? 1 : quality);
   } catch (err) {
     console.warn('Could not re-encode image', err);
     return null;
@@ -177,11 +188,11 @@ function toCappedDataUrl(source, width, height, type) {
  *  hands the file to the platform decoder, which on Apple devices includes
  *  HEIC — so an iPhone photo goes straight in. Browsers without a HEIC
  *  decoder fail both paths and the caller keeps the original file instead. */
-async function decodeImage(file) {
+async function decodeImage(file, maxEdge = MAX_STORED_EDGE, quality = 0.82) {
   if (typeof createImageBitmap === 'function') {
     try {
       const bitmap = await createImageBitmap(file);
-      const out = toCappedDataUrl(bitmap, bitmap.width, bitmap.height, file.type);
+      const out = toCappedDataUrl(bitmap, bitmap.width, bitmap.height, file.type, maxEdge, quality);
       if (bitmap.close) bitmap.close();
       if (out) return out;
     } catch (err) {
@@ -197,7 +208,7 @@ async function decodeImage(file) {
       el.onerror = () => resolve(null);
       el.src = dataUrl;
     });
-    if (img) return toCappedDataUrl(img, img.naturalWidth, img.naturalHeight, file.type);
+    if (img) return toCappedDataUrl(img, img.naturalWidth, img.naturalHeight, file.type, maxEdge, quality);
   } catch (err) {
     console.warn('Could not read file', err);
   }
@@ -258,7 +269,7 @@ const Photos = {
       <label class="dropzone ${classes}" for="${slotId}-input" data-slot="${slotId}">
         <img class="dropzone__preview" alt="" />
         <button type="button" class="dropzone__clear" aria-label="Remove this photo">&times;</button>
-        <button type="button" class="dropzone__save" title="Save this photo as a file to commit under assets/">Save for the site</button>
+        <button type="button" class="dropzone__save" title="Download a full-resolution copy to commit under assets/">Save for the site</button>
         <span class="dropzone__icon" aria-hidden="true">${icon}</span>
         <span class="dropzone__label">${label}</span>
         <span class="dropzone__cta">Choose a file</span>
@@ -306,6 +317,11 @@ const Photos = {
 
     const handleFile = async (file) => {
       if (!file) return;
+      // Kept only in memory (not serialised anywhere) so the save button
+      // below can re-decode the original at full quality later in this
+      // same page visit. Gone on reload — the fallback there is the
+      // already-stored preview, at whatever resolution it was saved.
+      dropzone._sourceFile = file;
       const meta = { name: file.name, type: file.type || 'unknown', addedAt: new Date().toISOString() };
 
       /** Falls back to keeping the file itself, so nothing silently vanishes. */
@@ -403,19 +419,44 @@ const Photos = {
       // Downloads the decoded photo named after its slot, so dropping it into
       // assets/ and adding `"<slot>": {"src": "assets/<slot>.jpg"}` to
       // content.json publishes it without touching localStorage at all.
-      saveBtn.addEventListener('click', (e) => {
+      saveBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
         const photo = Storage.getPhoto(slotId);
-        if (!photo || !photo.dataUrl) return;
-        const ext = isPdf(photo) ? 'pdf' : (photo.dataUrl.includes('image/png') ? 'png' : 'jpg');
+        // The button is only ever shown for a decoded image (see has-image
+        // above), never for an attachment, but guard it anyway.
+        if (!photo || !photo.dataUrl || isAttachment(photo)) return;
+
+        let dataUrl = photo.dataUrl;
+        let highRes = false;
+
+        // The stored copy is sized for the in-browser preview and the
+        // localStorage budget. When the original file is still around from
+        // this upload, re-decode it fresh at publish resolution instead of
+        // just re-exporting that smaller preview.
+        if (dropzone._sourceFile) {
+          saveBtn.disabled = true;
+          showToast('Preparing a high-resolution copy for the site…');
+          let hi = await decodeImage(dropzone._sourceFile, PUBLISH_MAX_EDGE, PUBLISH_QUALITY);
+          if (!hi && isHeic(dropzone._sourceFile)) {
+            hi = await decodeHeic(dropzone._sourceFile, PUBLISH_MAX_EDGE, PUBLISH_QUALITY);
+          }
+          saveBtn.disabled = false;
+          if (hi) { dataUrl = hi; highRes = true; }
+        }
+
+        const ext = dataUrl.includes('image/png') ? 'png' : 'jpg';
         const link = document.createElement('a');
-        link.href = photo.dataUrl;
+        link.href = dataUrl;
         link.download = `${slotId}.${ext}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        showToast(`Saved ${slotId}.${ext} — commit it under assets/ to publish it.`);
+        showToast(
+          highRes
+            ? `Saved ${slotId}.${ext} at full resolution — commit it under assets/ to publish it.`
+            : `Saved ${slotId}.${ext} — commit it under assets/ to publish it. Reopen the source photo to export a sharper copy.`
+        );
       });
     }
 

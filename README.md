@@ -134,8 +134,14 @@ second is the one to use for photos you intend to keep:
 ### The assets route
 
 1. Drop the photo into a frame with `?edit` — HEIC included.
-2. Click **Save for the site**. You get `<slot-id>.jpg`, already resized and
-   re-encoded, named after the frame it belongs to.
+2. Click **Save for the site**. It re-decodes the original file (still in
+   memory from the upload) at 2400px longest edge, JPEG quality 0.92 — a
+   different, higher target than the 1600px/0.82 preview that went into
+   localStorage, so the copy you commit isn't a re-export of the small
+   in-browser preview. This is what "assets/" gives you over `content.json`
+   for photos you actually want visitors to see clearly on any device: a
+   real file, served at full quality from GitHub Pages' CDN, not a base64
+   blob sized to fit inside one browser's local storage.
 3. Commit it to `assets/`.
 4. Point the frame at it in `content.json`:
 
@@ -145,6 +151,13 @@ second is the one to use for photos you intend to keep:
 
 A record with `src` is read exactly like one with `dataUrl`, so frames can mix the
 two freely while you work. Editing warns you once browser storage passes 60% full.
+
+**Reopen the source photo before exporting.** The 2400px re-decode only happens
+if the original file is still in memory from this upload — gone after a page
+reload. If you export after reloading, "Save for the site" falls back to
+downloading whatever was already stored (the smaller preview) rather than
+upscaling it, and says so in the toast. Drop the photo in and click Save in
+the same visit for the full-resolution file.
 
 Several frames may share one file — the About postcard wall reuses shots that also
 appear in the guides, and a `src` costs nothing to point at twice.
