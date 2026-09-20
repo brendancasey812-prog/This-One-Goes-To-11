@@ -41,7 +41,9 @@ function publishedSection(key) {
 const Storage = {
   /* ---- Captions (postcards) ---- */
   getCaptions() {
-    return { ...(publishedSection('captions') || {}), ...readJSON(STORAGE_KEYS.captions, {}) };
+    const published = publishedSection('captions') || {};
+    if (typeof EditMode !== 'undefined' && !EditMode.active) return { ...published };
+    return { ...published, ...readJSON(STORAGE_KEYS.captions, {}) };
   },
 
   saveCaption(slotId, text) {
@@ -53,7 +55,9 @@ const Storage = {
 
   /* ---- Free-text notes keyed by field ---- */
   getAbout() {
-    return { ...(publishedSection('about') || {}), ...readJSON(STORAGE_KEYS.about, {}) };
+    const published = publishedSection('about') || {};
+    if (typeof EditMode !== 'undefined' && !EditMode.active) return { ...published };
+    return { ...published, ...readJSON(STORAGE_KEYS.about, {}) };
   },
 
   saveAboutField(key, text) {
@@ -64,7 +68,13 @@ const Storage = {
 
   /* ---- Photos (dataURLs keyed by slot) ---- */
   getPhotos() {
-    return { ...(publishedSection('photos') || {}), ...readJSON(STORAGE_KEYS.photos, {}) };
+    const published = publishedSection('photos') || {};
+    // View mode always shows exactly what's published — a stale local edit
+    // (or a photo removed while testing, long ago) must never haunt a plain
+    // visit forever just because it's sitting in this browser's storage.
+    // Local overrides only apply in ?edit mode, where they're the point.
+    if (typeof EditMode !== 'undefined' && !EditMode.active) return { ...published };
+    return { ...published, ...readJSON(STORAGE_KEYS.photos, {}) };
   },
 
   getPhoto(slotId) {
