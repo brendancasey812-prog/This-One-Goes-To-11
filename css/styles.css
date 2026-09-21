@@ -1180,8 +1180,14 @@ body.is-editing .site-footer { padding-bottom: 90px; }
 .feature--textonly { grid-template-columns: minmax(0, 1fr); }
 .feature--textonly .feature__body { max-width: 68ch; }
 
-.hero__grid--textonly { grid-template-columns: minmax(0, 1fr); }
+.hero__grid--textonly {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  text-align: center;
+}
 .hero__grid--textonly .hero__body { max-width: 62ch; }
+.hero__grid--textonly .hero__lede { margin-left: auto; margin-right: auto; }
+.hero__grid--textonly .hero__actions { justify-content: center; }
 
 /* Published postcard wall: even tiles, however many made the cut. */
 .postcards--even {
