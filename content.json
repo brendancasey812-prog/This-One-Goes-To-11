@@ -9,14 +9,14 @@
       "src": "assets/home-hero-preikestolen.jpg?v=20260920"
     },
     "home-why": {
-      "name": "Hiking Preikestolen, over the Lysefjord",
-      "kind": "image",
-      "src": "assets/preikestolen-crowd.jpg?v=20260920"
-    },
-    "home-eleven": {
       "name": "Vernal Fall, Yosemite",
       "kind": "image",
       "src": "assets/extra-yosemite-falls.jpg?v=20260920"
+    },
+    "home-eleven": {
+      "name": "Hiking Preikestolen, over the Lysefjord",
+      "kind": "image",
+      "src": "assets/preikestolen-crowd.jpg?v=20260920"
     },
     "yukon-hero": {
       "name": "Aurora over Whitehorse",
@@ -78,6 +78,11 @@
       "kind": "image",
       "src": "assets/laerdal-tunnel.jpg?v=20260920"
     },
+    "norway-lokka": {
+      "name": "BLA Bar, Grunerlokka",
+      "kind": "image",
+      "src": "assets/oslo-bla-bar.jpg?v=20260920"
+    },
     "city-flam": {
       "name": "Flam from above",
       "kind": "image",
@@ -132,6 +137,16 @@
       "name": "A course at Under, Lindesnes",
       "kind": "image",
       "src": "assets/under-lindesnes.jpg?v=20260920"
+    },
+    "postcard-6": {
+      "name": "A good boy, mid-thank-you",
+      "kind": "image",
+      "src": "assets/yukon-dog-highfive.png?v=20260920"
+    },
+    "postcard-7": {
+      "name": "On the sled, mid-run",
+      "kind": "image",
+      "src": "assets/yukon-sled-selfie.png?v=20260920"
     }
   }
 }
