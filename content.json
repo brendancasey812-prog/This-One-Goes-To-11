@@ -29,19 +29,19 @@
       "src": "assets/yukon-aurora-couple.jpg?v=20260920"
     },
     "yukon-night-1": {
-      "name": "Night one",
-      "kind": "image",
-      "src": "assets/yukon-aurora-bright.png?v=20260920"
-    },
-    "yukon-night-2": {
-      "name": "Night two",
+      "name": "Night one, a hint of light by the cabin",
       "kind": "image",
       "src": "assets/yukon-aurora-night2.png?v=20260920"
     },
-    "yukon-night-3": {
-      "name": "Night three",
+    "yukon-night-2": {
+      "name": "Night two, a brief show",
       "kind": "image",
       "src": "assets/yukon-aurora-night3.png?v=20260920"
+    },
+    "yukon-night-3": {
+      "name": "Night three, the sky finally goes off",
+      "kind": "image",
+      "src": "assets/yukon-aurora-bright.png?v=20260920"
     },
     "yukon-dogs": {
       "name": "The team, ten Alaskan huskies",
