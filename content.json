@@ -8,6 +8,26 @@
       "kind": "image",
       "src": "assets/home-hero-preikestolen.jpg?v=20260920"
     },
+    "norway-fram": {
+      "name": "The Fram, bow-on",
+      "kind": "image",
+      "src": "assets/oslo-fram-ship.jpg?v=20260922"
+    },
+    "norway-flam-train": {
+      "name": "The Flam Railway, cliffside",
+      "kind": "image",
+      "src": "assets/flam-railway-train.jpg?v=20260922"
+    },
+    "norway-flam-trail": {
+      "name": "Waterfalls along the hike down",
+      "kind": "image",
+      "src": "assets/flam-kjosfossen-trail.jpg?v=20260922"
+    },
+    "norway-floyen": {
+      "name": "Bergen from the top of Mount Floyen",
+      "kind": "image",
+      "src": "assets/bergen-floyen-view.jpg?v=20260922"
+    },
     "home-why": {
       "name": "Vernal Fall, Yosemite",
       "kind": "image",
