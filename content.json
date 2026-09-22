@@ -83,6 +83,11 @@
       "kind": "image",
       "src": "assets/oslo-bla-bar.jpg?v=20260920"
     },
+    "norway-scream": {
+      "name": "The Scream, on display at the MUNCH museum",
+      "kind": "image",
+      "src": "assets/oslo-the-scream.jpg?v=20260922"
+    },
     "norway-road-sign": {
       "name": "The moteplass passing-place sign",
       "kind": "image",
