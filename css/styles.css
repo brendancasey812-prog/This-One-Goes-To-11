@@ -96,6 +96,7 @@ img { max-width: 100%; display: block; }
 button, input, textarea, select { font-family: inherit; font-size: inherit; }
 
 a { color: var(--sea); }
+.on-dark a { color: var(--foam); }
 
 .container { width: min(1180px, 90%); margin: 0 auto; }
 .container--narrow { width: min(820px, 90%); margin: 0 auto; }

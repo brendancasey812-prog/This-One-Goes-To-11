@@ -83,6 +83,11 @@
       "kind": "image",
       "src": "assets/oslo-bla-bar.jpg?v=20260920"
     },
+    "norway-road-sign": {
+      "name": "The moteplass passing-place sign",
+      "kind": "image",
+      "src": "assets/norway-road-sign-m.png?v=20260922"
+    },
     "city-flam": {
       "name": "Flam from above",
       "kind": "image",
