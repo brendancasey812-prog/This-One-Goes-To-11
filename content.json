@@ -13,6 +13,21 @@
       "kind": "image",
       "src": "assets/yukon-macbride-museum.jpg?v=20261009"
     },
+    "yukon-wildlife-group": {
+      "name": "Part of the herd",
+      "kind": "image",
+      "src": "assets/yukon-wildlife-group.jpg?v=20261009"
+    },
+    "yukon-hotsprings-sign": {
+      "name": "Eclipse Nordic Hotsprings",
+      "kind": "image",
+      "src": "assets/yukon-hotsprings-sign.jpg?v=20261009"
+    },
+    "yukon-ss-klondike": {
+      "name": "The S.S. Klondike, trapped in winter",
+      "kind": "image",
+      "src": "assets/yukon-ss-klondike.jpg?v=20261009"
+    },
     "yukon-antoinettes": {
       "name": "Antoinette's Restaurant",
       "kind": "image",
