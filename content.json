@@ -178,11 +178,6 @@
       "kind": "image",
       "src": "assets/norway-road-sign-m.png?v=20260922"
     },
-    "city-flam": {
-      "name": "Flam from above",
-      "kind": "image",
-      "src": "assets/flam-valley.jpg?v=20260920"
-    },
     "norway-flam-harbor": {
       "name": "Flam harbor at twilight",
       "kind": "image",
