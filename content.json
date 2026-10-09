@@ -13,6 +13,16 @@
       "kind": "image",
       "src": "assets/yukon-macbride-museum.jpg?v=20261009"
     },
+    "yukon-london-bust": {
+      "name": "The Jack London bust, 4th and Main",
+      "kind": "image",
+      "src": "assets/yukon-london-bust.jpg?v=20261009"
+    },
+    "yukon-bison-ribs-plate": {
+      "name": "Braised bison short ribs",
+      "kind": "image",
+      "src": "assets/yukon-bison-ribs-plate.jpg?v=20261009"
+    },
     "yukon-wildlife-group": {
       "name": "Part of the herd",
       "kind": "image",
