@@ -8,6 +8,21 @@
       "kind": "image",
       "src": "assets/home-hero-preikestolen.jpg?v=20260920"
     },
+    "yukon-macbride": {
+      "name": "The MacBride Museum, downtown",
+      "kind": "image",
+      "src": "assets/yukon-macbride-museum.jpg?v=20261009"
+    },
+    "yukon-antoinettes": {
+      "name": "Antoinette's Restaurant",
+      "kind": "image",
+      "src": "assets/yukon-antoinettes.jpg?v=20261009"
+    },
+    "yukon-london-book": {
+      "name": "Call of the Wild and White Fang",
+      "kind": "image",
+      "src": "assets/yukon-jack-london-book.jpg?v=20261009"
+    },
     "norway-fram": {
       "name": "The Fram, bow-on",
       "kind": "image",
