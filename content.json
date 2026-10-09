@@ -58,6 +58,16 @@
       "kind": "image",
       "src": "assets/oslo-fram-ship.jpg?v=20260922"
     },
+    "norway-bryggen-oysters": {
+      "name": "Oysters on ice, Bryggen",
+      "kind": "image",
+      "src": "assets/bergen-oysters.jpg?v=20261009"
+    },
+    "norway-bryggen-mussels": {
+      "name": "Mussels with grilled bread, Bryggen",
+      "kind": "image",
+      "src": "assets/bergen-mussels.jpg?v=20261009"
+    },
     "norway-flam-train": {
       "name": "The Flam Railway, cliffside",
       "kind": "image",
