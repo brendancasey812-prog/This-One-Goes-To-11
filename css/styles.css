@@ -1626,6 +1626,12 @@ body.is-editing .only-view { display: none; }
 
 .eleven__media { margin-top: 18px; max-width: 620px; }
 
+.eleven__media--side {
+  float: right;
+  margin: 0 0 14px 24px;
+  max-width: 240px;
+}
+
 /* ======================================================================== */
 /* A city leg — the intro to a city, above the stops that belong to it      */
 /* ======================================================================== */
@@ -1794,6 +1800,7 @@ body.is-editing .only-view { display: none; }
 
 @media (max-width: 620px) {
   .eleven__item { grid-template-columns: 1fr; gap: 16px; padding: 24px 22px; }
+  .eleven__media--side { float: none; max-width: 100%; margin: 18px 0 0; }
   .callout { padding: 24px 22px; }
   .head-group__items.jumpbar { grid-template-columns: minmax(0, 1fr); }
 }
