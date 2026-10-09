@@ -183,6 +183,11 @@
       "kind": "image",
       "src": "assets/flam-valley.jpg?v=20260920"
     },
+    "norway-flam-harbor": {
+      "name": "Flam harbor at twilight",
+      "kind": "image",
+      "src": "assets/flam-harbor-twilight.jpg?v=20261009"
+    },
     "norway-stegastein": {
       "name": "The platform at Stegastein",
       "kind": "image",
