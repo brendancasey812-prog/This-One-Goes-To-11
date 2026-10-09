@@ -78,6 +78,16 @@
       "kind": "image",
       "src": "assets/flam-kjosfossen-trail.jpg?v=20260922"
     },
+    "norway-flam-valley": {
+      "name": "The Aurland valley, between Flam and Bergen",
+      "kind": "image",
+      "src": "assets/norway-flam-valley.jpg?v=20261009"
+    },
+    "norway-naeroyfjord-village": {
+      "name": "A village along the Naeroyfjord, waterfalls behind",
+      "kind": "image",
+      "src": "assets/norway-naeroyfjord-village.jpg?v=20261009"
+    },
     "norway-floyen": {
       "name": "Bergen from the top of Mount Floyen",
       "kind": "image",
