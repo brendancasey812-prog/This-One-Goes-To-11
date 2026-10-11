@@ -4,9 +4,9 @@
   "captions": {},
   "photos": {
     "home-about": {
-      "name": "This Trip Goes to 11",
+      "name": "On top of Preikestolen",
       "kind": "image",
-      "src": "assets/logo-11-dial.png?v=20261009"
+      "src": "assets/home-hero-preikestolen.jpg?v=20260920"
     },
     "yukon-northern-lights": {
       "name": "Aurora over a snow-covered field and cabin",
@@ -99,9 +99,9 @@
       "src": "assets/extra-yosemite-falls.jpg?v=20260920"
     },
     "home-eleven": {
-      "name": "Hiking Preikestolen, over the Lysefjord",
+      "name": "This Trip Goes to 11",
       "kind": "image",
-      "src": "assets/preikestolen-crowd.jpg?v=20260920"
+      "src": "assets/logo-11-dial.png?v=20261009"
     },
     "yukon-hero": {
       "name": "Aurora over Whitehorse",
