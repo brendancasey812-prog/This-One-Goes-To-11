@@ -994,6 +994,13 @@ a { color: var(--sea); }
 }
 
 .site-footer__links a { color: var(--foam); text-decoration: none; }
+
+.site-footer__disclosure {
+  margin-top: 16px;
+  font-size: 0.8rem;
+  font-style: italic;
+  opacity: 0.75;
+}
 .site-footer__links a:hover { text-decoration: underline; }
 
 /* ---------------------------------------------------------------------- */
