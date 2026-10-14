@@ -1091,6 +1091,9 @@ a { color: var(--sea); }
 
 .photo img { width: 100%; height: auto; display: block; }
 
+/* The dial logo's own lines are black; give it a white card instead of the usual teal fill. */
+#why-eleven .photo { background: #ffffff; }
+
 /* The dropzone--* variants size the *empty* frame. Once a frame holds a
    picture it takes that picture's shape, otherwise the frame's background
    shows as a band under a photo that doesn't happen to match its height. */
